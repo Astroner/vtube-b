@@ -1,10 +1,11 @@
 import { videoFormat } from "ytdl-core";
 import * as fetcher from "ytdl-core";
+import { YTImage } from "src/Types";
 
 export interface VideoInfo {
     title: string;
     standard: videoFormat;
-    displayImage: string;
+    displayImage: YTImage[];
 
     videoOnly: videoFormat[];
     audioOnly: videoFormat[];

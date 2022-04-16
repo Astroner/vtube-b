@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as fetcher from "ytdl-core";
 import { CacheService } from "./cache.service";
 import { VideoInfo, VideoStream } from "./youtube.model";
@@ -45,35 +45,32 @@ export class YoutubeService {
             endParam ??
             Math.min(start + YoutubeService.CHUNK_SIZE, videoSize - 1);
 
-        const stream = fetcher(code, {
-            format,
-            range: {
-                start,
+        try {
+            const stream = fetcher(code, {
+                quality: format.itag,
+                range: {
+                    start,
+                    end,
+                },
+                dlChunkSize: YoutubeService.CHUNK_SIZE,
+            });
+            return {
+                contentLength: end - start + 1,
                 end,
-            },
-            dlChunkSize: YoutubeService.CHUNK_SIZE,
-        });
-
-        return {
-            contentLength: end - start + 1,
-            end,
-            start,
-            stream,
-            videoSize,
-            mimeType: format.mimeType,
-        };
+                start,
+                stream,
+                videoSize,
+                mimeType: format.mimeType,
+            };
+        } catch (e) {
+            throw new InternalServerErrorException(
+                `Failed to fetch video "${code}"`
+            );
+        }
     }
 
     private async fetchInfo(code: string): Promise<VideoInfo> {
         const info = await fetcher.getBasicInfo(code);
-
-        const displayImage =
-            info.player_response.videoDetails.thumbnail.thumbnails[
-                Math.floor(
-                    info.player_response.videoDetails.thumbnail.thumbnails
-                        .length / 2
-                )
-            ].url;
 
         const audioOnly: fetcher.videoFormat[] = [];
         const videoOnly: fetcher.videoFormat[] = [];
@@ -105,7 +102,13 @@ export class YoutubeService {
             title: info.videoDetails.title,
             both,
             all: info.formats,
-            displayImage: displayImage.split("?")[0],
+            displayImage:
+                info.player_response.videoDetails.thumbnail.thumbnails.map(
+                    (item) => ({
+                        ...item,
+                        url: item.url.split("?")[0],
+                    })
+                ),
         };
     }
 }
