@@ -8,7 +8,6 @@ import {
     Query,
     Response,
 } from "@nestjs/common";
-import { map } from "rxjs";
 
 import { YoutubeService } from "src/youtube/youtube.service";
 
