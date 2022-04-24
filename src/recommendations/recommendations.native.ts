@@ -1,80 +1,84 @@
-import { YTImage } from "src/Types"
+import { YTImage } from "src/Types";
 
 export interface VideoRenderer {
     videoRenderer: {
         title: {
-            runs: [{
-                text: string
-            }]
-        },
-        videoId: string,
+            runs: [
+                {
+                    text: string;
+                }
+            ];
+        };
+        videoId: string;
         thumbnail: {
-            thumbnails: YTImage[]
-        }
-    }
+            thumbnails: YTImage[];
+        };
+    };
 }
 
 export interface RadioRenderer {
     radioRenderer: {
         title: {
-            simpleText: string
-        },
+            simpleText: string;
+        };
         thumbnail: {
-            thumbnails: YTImage[]
-        },
+            thumbnails: YTImage[];
+        };
         navigationEndpoint: {
             watchEndpoint: {
-                playlistId: string,
-                videoId: string
-            },
+                playlistId: string;
+                videoId: string;
+            };
             commandMetadata: {
                 webCommandMetadata: {
-                    url: string
-                }
-            }
-        }
-    }
+                    url: string;
+                };
+            };
+        };
+    };
 }
 
 export interface YoutubeRecommendations {
     contents: {
         twoColumnBrowseResultsRenderer: {
-            tabs: [{
-                tabRenderer: {
-                    content: {
-                        richGridRenderer: {
-                            contents: Array<{
-                                richItemRenderer: {
-                                    content: VideoRenderer | RadioRenderer
-                                }
-                            }>
-                        }
-                    }
+            tabs: [
+                {
+                    tabRenderer: {
+                        content: {
+                            richGridRenderer: {
+                                contents: Array<{
+                                    richItemRenderer: {
+                                        content: VideoRenderer | RadioRenderer;
+                                    };
+                                }>;
+                            };
+                        };
+                    };
                 }
-            }]
-        }
-    }
+            ];
+        };
+    };
 }
 
 export interface MusicTwoRowItemRenderer {
     musicTwoRowItemRenderer: {
         title: {
-            runs: [{ text: string }]
-        },
+            runs: [{ text: string }];
+        };
         thumbnailRenderer: {
             musicThumbnailRenderer: {
                 thumbnail: {
-                    thumbnails: YTImage[]
-                }
-            }
-        },
+                    thumbnails: YTImage[];
+                };
+            };
+        };
         navigationEndpoint: {
             watchEndpoint: {
                 playlistId: string;
                 videoId: string;
-            }
-        }
-    }
+            };
+        };
+    };
 }
 
 export interface MusicResponsiveListItemRenderer {
@@ -82,59 +86,68 @@ export interface MusicResponsiveListItemRenderer {
         thumbnail: {
             musicThumbnailRenderer: {
                 thumbnail: {
-                    thumbnails: YTImage[]
-                }
-            }
-        },
+                    thumbnails: YTImage[];
+                };
+            };
+        };
         overlay: {
             musicItemThumbnailOverlayRenderer: {
                 content: {
                     musicPlayButtonRenderer: {
                         playNavigationEndpoint: {
                             watchEndpoint: {
-                                playlistId: string,
-                                videoId: string,
-                            }
-                        }
-                    }
-                }
+                                playlistId: string;
+                                videoId: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        flexColumns: [
+            {
+                musicResponsiveListItemFlexColumnRenderer: {
+                    text: {
+                        runs: [{ text: string }];
+                    };
+                };
             }
-        },
-        flexColumns: [{
-            musicResponsiveListItemFlexColumnRenderer: {
-                text: {
-                    runs: [{ text: string }]
-                }
-            }
-        }]
-    }
+        ];
+    };
 }
 
 export interface MusicRecommendations {
     contents: {
         singleColumnBrowseResultsRenderer: {
-            tabs: [{
-                tabRenderer: {
-                    content: {
-                        sectionListRenderer: {
-                            contents: Array<{
-                                musicCarouselShelfRenderer: {
-                                    header: {
-                                        musicCarouselShelfBasicHeaderRenderer: {
-                                            title: {
-                                                runs: [{
-                                                    text: string
-                                                }]
-                                            }
-                                        }
-                                    },
-                                    contents: Array<MusicTwoRowItemRenderer | MusicResponsiveListItemRenderer>
-                                }
-                            }>
-                        }
-                    }
+            tabs: [
+                {
+                    tabRenderer: {
+                        content: {
+                            sectionListRenderer: {
+                                contents: Array<{
+                                    musicCarouselShelfRenderer: {
+                                        header: {
+                                            musicCarouselShelfBasicHeaderRenderer: {
+                                                title: {
+                                                    runs: [
+                                                        {
+                                                            text: string;
+                                                        }
+                                                    ];
+                                                };
+                                            };
+                                        };
+                                        contents: Array<
+                                            | MusicTwoRowItemRenderer
+                                            | MusicResponsiveListItemRenderer
+                                        >;
+                                    };
+                                }>;
+                            };
+                        };
+                    };
                 }
-            }]
-        }
-    }
+            ];
+        };
+    };
 }
