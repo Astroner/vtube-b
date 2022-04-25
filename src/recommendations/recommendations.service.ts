@@ -135,10 +135,6 @@ export class RecommendationsService {
                                                     .musicTwoRowItemRenderer
                                                     .navigationEndpoint
                                                     .watchEndpoint.playlistId,
-                                                code: item
-                                                    .musicTwoRowItemRenderer
-                                                    .navigationEndpoint
-                                                    .watchEndpoint.videoId,
                                             });
                                         } else if (
                                             "musicResponsiveListItemRenderer" in
@@ -163,14 +159,6 @@ export class RecommendationsService {
                                                     .musicPlayButtonRenderer
                                                     .playNavigationEndpoint
                                                     .watchEndpoint.playlistId,
-                                                code: item
-                                                    .musicResponsiveListItemRenderer
-                                                    .overlay
-                                                    .musicItemThumbnailOverlayRenderer
-                                                    .content
-                                                    .musicPlayButtonRenderer
-                                                    .playNavigationEndpoint
-                                                    .watchEndpoint.videoId,
                                             });
                                         } else {
                                             throw new InternalServerErrorException(

@@ -1,8 +1,17 @@
 import { HttpService } from "@nestjs/axios";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+} from "@nestjs/common";
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
-import { PlaylistData, PlaylistError, Playlist } from "./playlist.model";
+import { Playlist } from "./playlist.model";
+import {
+    DynamicPlaylist,
+    PlaylistData,
+    PlaylistError,
+} from "./playlist.native";
 
 @Injectable()
 export class PlaylistService {
@@ -43,6 +52,45 @@ export class PlaylistService {
                         };
                     }
                     throw new BadRequestException(json.alerts);
+                })
+            );
+    }
+
+    getDynamicPlaylist(list: string): Observable<Playlist> {
+        return this.http
+            .get<string>("https://youtube.com/watch", {
+                params: { list },
+            })
+            .pipe(
+                map((res) => res.data.match(/var ytInitialData = (.+);</m)[1]),
+                map((json) => json && JSON.parse(json)),
+                map((data: null | DynamicPlaylist) => {
+                    if (!data)
+                        throw new InternalServerErrorException(
+                            "CANNOT_PARSE_DYNAMIC_PLAYLIST"
+                        );
+
+                    const playlist =
+                        data.contents.twoColumnWatchNextResults.playlist
+                            .playlist;
+
+                    return {
+                        title: playlist.title,
+                        display:
+                            playlist.contents[1].playlistPanelVideoRenderer.thumbnail.thumbnails.map(
+                                cutYTImageLink
+                            ),
+                        list: playlist.contents.slice(1).map((item) => ({
+                            title: item.playlistPanelVideoRenderer.title
+                                .simpleText,
+                            code: item.playlistPanelVideoRenderer
+                                .navigationEndpoint.watchEndpoint.videoId,
+                            display:
+                                item.playlistPanelVideoRenderer.thumbnail.thumbnails.map(
+                                    cutYTImageLink
+                                ),
+                        })),
+                    };
                 })
             );
     }

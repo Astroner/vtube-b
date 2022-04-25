@@ -16,5 +16,4 @@ export interface DynamicPlaylistRecommendation {
     title: string;
     display: YTImage[];
     list: string;
-    code: string;
 }
