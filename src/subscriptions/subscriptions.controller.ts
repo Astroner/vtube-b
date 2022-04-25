@@ -5,7 +5,7 @@ import { SubscriptionsService } from "./subscriptions.service";
 export class SubscriptionsController {
     constructor(private subscriptions: SubscriptionsService) {}
 
-    @Get("get/:psid")
+    @Get(":psid")
     getSubscriptions(@Param("psid") psid: string) {
         return this.subscriptions.getSubscriptions(psid);
     }
