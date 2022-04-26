@@ -70,11 +70,11 @@ export class PlaylistService {
                             "CANNOT_PARSE_DYNAMIC_PLAYLIST"
                         );
 
+                    console.log(data.contents);
+
                     const playlist =
                         data.contents.twoColumnWatchNextResults.playlist
                             .playlist;
-                    
-                    console.log(data.contents);
 
                     return {
                         title: playlist.title,
