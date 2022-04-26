@@ -57,12 +57,18 @@ export class PlaylistService {
     }
 
     getDynamicPlaylist(list: string): Observable<Playlist> {
+        console.log("REQUESTING LIST: " + list);
         return this.http
             .get<string>("https://youtube.com/watch", {
                 params: { list },
             })
             .pipe(
-                map((res) => res.data.match(/var ytInitialData = (.+);</m)[1]),
+                map((res) => {
+                    console.log(JSON.stringify(res.headers, null, 4));
+                    console.log("ASDASDAJSDHKAL:SDL:JLKHJAVGSVDHKASKDJHJVGAHBKNL:KSD:KLJAKHJVSHDBKJLKLA:LSJKD")
+                    console.log(res.request);
+                    return res.data.match(/var ytInitialData = (.+);</m)[1];
+                }),
                 map((json) => json && JSON.parse(json)),
                 map((data: null | DynamicPlaylist) => {
                     if (!data)
