@@ -8,6 +8,7 @@ import {
     Query,
     Response,
 } from "@nestjs/common";
+import { Response as ServerResponse } from "express";
 
 import { YoutubeService } from "src/youtube/youtube.service";
 
@@ -17,7 +18,7 @@ export class PlayerController {
 
     @Get(":code")
     async stream(
-        @Response() res,
+        @Response() res: ServerResponse,
         @Param("code") code: string,
         @Headers("range") range: string,
         @Query("itag") itag?: string
