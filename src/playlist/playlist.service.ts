@@ -56,12 +56,12 @@ export class PlaylistService {
             );
     }
 
-    getDynamicPlaylist(list: string): Observable<Playlist> {
+    getDynamicPlaylist(psid: string, list: string): Observable<Playlist> {
         return this.http
             .get<string>("https://youtube.com/watch", {
                 params: { list },
                 headers: {
-                    cookie: `__Secure-3PSID=IgjZqcduHUt2TpNYiwA4nX3XyHQhq0RUzSB9dqdu2IuSFyPZWpdsRBLSd-aoV1IP1_pJcw.;`,
+                    cookie: `__Secure-3PSID=${psid};`,
                 },
             })
             .pipe(
