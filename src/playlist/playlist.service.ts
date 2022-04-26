@@ -73,6 +73,8 @@ export class PlaylistService {
                     const playlist =
                         data.contents.twoColumnWatchNextResults.playlist
                             .playlist;
+                    
+                    console.log(data.contents);
 
                     return {
                         title: playlist.title,
