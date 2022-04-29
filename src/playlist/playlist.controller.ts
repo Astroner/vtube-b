@@ -5,12 +5,13 @@ import { PlaylistService } from "./playlist.service";
 export class PlaylistController {
     constructor(private playlist: PlaylistService) {}
 
-    @Get("dynamic/:psid/:list")
+    @Get("dynamic/:psid/:list/:code")
     getDynamicPlaylist(
         @Param("psid") psid: string,
-        @Param("list") list: string
+        @Param("list") list: string,
+        @Param("code") code: string
     ) {
-        return this.playlist.getDynamicPlaylist(psid, list);
+        return this.playlist.getDynamicPlaylist(psid, list, code);
     }
 
     @Get(":list")

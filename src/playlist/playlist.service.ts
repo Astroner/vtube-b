@@ -6,7 +6,8 @@ import {
 } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
-import { Playlist } from "./playlist.model";
+import { YTImage } from "src/Types";
+import { ListItem, Playlist } from "./playlist.model";
 import {
     DynamicPlaylist,
     PlaylistData,
@@ -56,10 +57,14 @@ export class PlaylistService {
             );
     }
 
-    getDynamicPlaylist(psid: string, list: string): Observable<Playlist> {
+    getDynamicPlaylist(
+        psid: string,
+        list: string,
+        code: string
+    ): Observable<Playlist> {
         return this.http
             .get<string>("https://youtube.com/watch", {
-                params: { list },
+                params: { list, v: code },
                 headers: {
                     cookie: `__Secure-3PSID=${psid};`,
                 },
@@ -77,13 +82,25 @@ export class PlaylistService {
                         data.contents.twoColumnWatchNextResults.playlist
                             .playlist;
 
-                    return {
-                        title: playlist.title,
-                        display:
-                            playlist.contents[1].playlistPanelVideoRenderer.thumbnail.thumbnails.map(
-                                cutYTImageLink
-                            ),
-                        list: playlist.contents.slice(1).map((item) => ({
+                    let display: YTImage[];
+                    const list: ListItem[] = [];
+
+                    for (const item of playlist.contents) {
+                        // filter "YT is not avaliable on your device" video
+                        if (
+                            item.playlistPanelVideoRenderer.navigationEndpoint
+                                .watchEndpoint.videoId === "9xp1XWmJ_Wo"
+                        )
+                            continue;
+
+                        if (!display) {
+                            display =
+                                item.playlistPanelVideoRenderer.thumbnail.thumbnails.map(
+                                    cutYTImageLink
+                                );
+                        }
+
+                        list.push({
                             title: item.playlistPanelVideoRenderer.title
                                 .simpleText,
                             code: item.playlistPanelVideoRenderer
@@ -92,7 +109,13 @@ export class PlaylistService {
                                 item.playlistPanelVideoRenderer.thumbnail.thumbnails.map(
                                     cutYTImageLink
                                 ),
-                        })),
+                        });
+                    }
+
+                    return {
+                        title: playlist.title,
+                        display,
+                        list,
                     };
                 })
             );
