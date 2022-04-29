@@ -4,6 +4,7 @@ import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
 import {
     DynamicPlaylistRecommendation,
+    MusicCategories,
     Recommendation,
 } from "./recommendations.model";
 import {
@@ -73,7 +74,7 @@ export class RecommendationsService {
                 })
             );
     }
-    getMusicRecommendations(psid: string) {
+    getMusicRecommendations(psid: string): Observable<MusicCategories> {
         return this.http
             .get<string>("https://music.youtube.com/", {
                 headers: {

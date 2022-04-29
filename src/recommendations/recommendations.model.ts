@@ -17,3 +17,12 @@ export interface DynamicPlaylistRecommendation {
     display: YTImage[];
     list: string;
 }
+
+export interface MusicCategory {
+    title: string;
+    items: DynamicPlaylistRecommendation[];
+}
+
+export interface MusicCategories {
+    categories: MusicCategory[];
+}
