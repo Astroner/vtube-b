@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
+import { extractDataFromResponse } from "src/helpers/extractDataFromResponse";
 import { YTImage } from "src/Types";
 import { ListItem, Playlist } from "./playlist.model";
 import {
@@ -23,11 +24,7 @@ export class PlaylistService {
                 params: { list },
             })
             .pipe(
-                map(
-                    (response) =>
-                        response.data.match(/var ytInitialData = (.+);</m)[1]
-                ),
-                map((data) => JSON.parse(data) as PlaylistData | PlaylistError),
+                extractDataFromResponse<PlaylistData | PlaylistError>(),
                 map((json) => {
                     if ("metadata" in json) {
                         return {
@@ -70,9 +67,8 @@ export class PlaylistService {
                 },
             })
             .pipe(
-                map((res) => res.data.match(/var ytInitialData = (.+);</m)[1]),
-                map((json) => json && JSON.parse(json)),
-                map((data: null | DynamicPlaylist) => {
+                extractDataFromResponse<DynamicPlaylist>(),
+                map((data: DynamicPlaylist) => {
                     if (!data)
                         throw new InternalServerErrorException(
                             "CANNOT_PARSE_DYNAMIC_PLAYLIST"

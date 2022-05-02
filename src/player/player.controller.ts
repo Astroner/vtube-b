@@ -90,7 +90,7 @@ export class PlayerController {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>=
+<body>
     <video id="vid" width="50%" src="/player/${code}" controls>
     </video>
 </body>

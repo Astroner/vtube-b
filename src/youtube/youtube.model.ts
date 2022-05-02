@@ -1,16 +1,16 @@
-import { videoFormat } from "ytdl-core";
 import * as fetcher from "ytdl-core";
 import { YTImage } from "src/Types";
+import { YTSource } from "./youtube.responses";
 
 export interface VideoInfo {
     title: string;
-    standard: videoFormat;
+    standard: YTSource;
     displayImage: YTImage[];
 
-    videoOnly: videoFormat[];
-    audioOnly: videoFormat[];
-    both: videoFormat[];
-    all: videoFormat[];
+    videoOnly: YTSource[];
+    audioOnly: YTSource[];
+    both: YTSource[];
+    all: YTSource[];
 }
 
 export interface VideoStream {

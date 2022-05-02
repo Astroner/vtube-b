@@ -2,6 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
+import { extractDataFromResponse } from "src/helpers/extractDataFromResponse";
 import {
     DynamicPlaylistRecommendation,
     MusicCategories,
@@ -24,17 +25,8 @@ export class RecommendationsService {
                 },
             })
             .pipe(
-                map((res) => res.data),
-                map(
-                    (data) =>
-                        data.match(/var ytInitialData = (.+);</m)[1] ?? null
-                ),
-                map((json) => json && JSON.parse(json)),
-                map((data: YoutubeRecommendations | null) => {
-                    if (!data)
-                        throw new InternalServerErrorException(
-                            "CANNOT_PARSE_PLAYLIST"
-                        );
+                extractDataFromResponse<YoutubeRecommendations>(),
+                map((data) => {
                     const videos =
                         data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.richGridRenderer.contents.slice(
                             0,
