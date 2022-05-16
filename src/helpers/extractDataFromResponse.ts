@@ -7,9 +7,9 @@ export const extractDataFromResponse = <DataType>(
 ): OperatorFunction<AxiosResponse<string>, DataType> => {
     return map(({ data }) => {
         try {
-            const json = data.match(new RegExp(`var ${key} = (.+);<`, "m"))[1];
-            if (json) {
-                return JSON.parse(json);
+            const match = data.match(new RegExp(`var ${key} = (.+);<`, "m"));
+            if (match) {
+                return JSON.parse(match[0]);
             } else {
                 throw new InternalServerErrorException("Cannot extract data");
             }

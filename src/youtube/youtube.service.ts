@@ -27,7 +27,7 @@ export class YoutubeService {
         endParam?: number,
         itag?: number
     ): Promise<VideoStream> {
-        let format: YTSource;
+        let format: YTSource | null = null;
 
         if (itag) {
             const info = await this.getVideoInfo(code);
@@ -98,9 +98,14 @@ export class YoutubeService {
                         );
 
                     for (const format of allFormats) {
-                        const [type, ext] = format.mimeType
-                            .match(/^(.+);/)[1]
-                            .split("/");
+                        const match = format.mimeType.match(/^(.+);/);
+
+                        if (!match)
+                            throw new InternalServerErrorException(
+                                `Unable to parse mime "${format.mimeType}"`
+                            );
+
+                        const [type, ext] = match[1].split("/");
                         if (ext !== "mp4") continue;
 
                         if (format.itag === 18) standard = format;
@@ -120,7 +125,9 @@ export class YoutubeService {
                     return {
                         audioOnly,
                         videoOnly,
-                        standard,
+                        // we always have standard itag=18 type
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        standard: standard!,
                         title: info.videoDetails.title,
                         both,
                         all: allFormats,

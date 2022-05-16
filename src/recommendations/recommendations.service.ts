@@ -78,10 +78,11 @@ export class RecommendationsService {
             .pipe(
                 map((res) => res.data),
                 map((data) => {
-                    const text = data.match(
+                    const match = data.match(
                         /wse', params: (.+), data: (.+);ytcfg/gm
-                    )[0];
-                    if (!text) return null;
+                    );
+                    if (!match || !match[0]) return null;
+                    const [text] = match;
                     const json = "" + text.slice(text.indexOf("data:") + 7, -9);
 
                     return json.replace(/\\x(\d|\w)(\d|\w)/gm, (entry) => {

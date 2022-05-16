@@ -78,7 +78,7 @@ export class PlaylistService {
                         data.contents.twoColumnWatchNextResults.playlist
                             .playlist;
 
-                    let display: YTImage[];
+                    let display: YTImage[] = [];
                     const list: ListItem[] = [];
 
                     for (const item of playlist.contents) {
@@ -89,7 +89,7 @@ export class PlaylistService {
                         )
                             continue;
 
-                        if (!display) {
+                        if (display.length === 0) {
                             display =
                                 item.playlistPanelVideoRenderer.thumbnail.thumbnails.map(
                                     cutYTImageLink

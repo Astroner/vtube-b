@@ -32,7 +32,8 @@ export class CacheService {
             this.data.set(code, result);
         }
         this.setTimer(code);
-        return this.data.get(code);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.data.get(code)!;
     }
 
     private setTimer(code: string) {
