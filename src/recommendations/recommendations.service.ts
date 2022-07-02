@@ -1,6 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
+
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/extractDataFromResponse";
 import {
@@ -85,11 +86,13 @@ export class RecommendationsService {
                     const [text] = match;
                     const json = "" + text.slice(text.indexOf("data:") + 7, -9);
 
-                    return json.replace(/\\x(\d|\w)(\d|\w)/gm, (entry) => {
-                        return String.fromCharCode(
-                            parseInt(entry.slice(2), 16)
-                        );
-                    });
+                    return json
+                        .replace(/\\x(\d|\w)(\d|\w)/gm, (entry) => {
+                            return String.fromCharCode(
+                                parseInt(entry.slice(2), 16)
+                            );
+                        })
+                        .replace(/\\+/gm, () => "\\");
                 }),
                 map((json) => json && JSON.parse(json)),
                 map((data: MusicRecommendations | null) => {
