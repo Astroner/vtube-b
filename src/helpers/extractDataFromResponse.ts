@@ -9,7 +9,7 @@ export const extractDataFromResponse = <DataType>(
         try {
             const match = data.match(new RegExp(`var ${key} = (.+);<`, "m"));
             if (match) {
-                return JSON.parse(match[0]);
+                return JSON.parse(match[1]);
             } else {
                 throw new InternalServerErrorException("Cannot extract data");
             }
