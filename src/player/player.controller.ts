@@ -67,11 +67,12 @@ export class PlayerController {
 
         return info.formats
             .filter((item) => {
-                return;
-                (type === "audio" && item.hasAudio && !item.hasVideo) ||
+                return (
+                    (type === "audio" && item.hasAudio && !item.hasVideo) ||
                     (type === "video" && !item.hasAudio && item.hasVideo) ||
                     (type === "both" && item.hasAudio && item.hasVideo) ||
-                    type === "all";
+                    type === "all"
+                );
             })
             .map((item) => ({
                 itag: item.itag,
