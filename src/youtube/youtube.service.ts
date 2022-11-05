@@ -1,7 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import * as fetcher from "ytdl-core";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { firstValueFrom, from, Observable } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { cutYTImageLink } from "src/helpers/cutYTImageLink";
 import { CacheService } from "./cache.service";
@@ -15,9 +15,7 @@ export class YoutubeService {
     constructor(private cache: CacheService, private http: HttpService) {}
 
     async getVideoInfo(code: string): Promise<VideoInfo> {
-        return await this.cache.getOr(code, () =>
-            firstValueFrom(this.fetchInfo(code))
-        );
+        return await this.cache.getOr(code, () => this.fetchInfo(code));
     }
 
     async getVideo(
@@ -71,74 +69,71 @@ export class YoutubeService {
         }
     }
 
-    private fetchInfo(code: string): Observable<VideoInfo> {
-        return from(
-            fetcher.getInfo(code).then(async (info): Promise<VideoInfo> => {
-                const formats: YTSource[] = await Promise.all(
-                    info.formats.map(async (format): Promise<YTSource> => {
-                        let contentLength: number;
-                        if (format.contentLength) {
-                            contentLength = +format.contentLength;
-                        } else {
-                            const data = await firstValueFrom(
-                                this.http.get(format.url, {
-                                    headers: {
-                                        Range: "bytes=0-1",
-                                    },
-                                })
-                            );
-                            contentLength =
-                                +data.headers["content-range"].split("/")[1];
-                        }
+    private fetchInfo(code: string): Promise<VideoInfo> {
+        return fetcher.getInfo(code).then(async (info): Promise<VideoInfo> => {
+            const formats: YTSource[] = await Promise.all(
+                info.formats.map(async (format): Promise<YTSource> => {
+                    let contentLength: number;
+                    if (format.contentLength) {
+                        contentLength = +format.contentLength;
+                    } else {
+                        const data = await firstValueFrom(
+                            this.http.get(format.url, {
+                                headers: {
+                                    Range: "bytes=0-1",
+                                },
+                            })
+                        );
+                        contentLength =
+                            +data.headers["content-range"].split("/")[1];
+                    }
 
-                        const basic: BasicSource = {
-                            contentLength,
-                            indexRange: format.indexRange ?? {
-                                end: "0",
-                                start: "0",
-                            },
-                            initRange: format.initRange ?? {
-                                end: "0",
-                                start: "0",
-                            },
-                            itag: format.itag,
-                            mimeType: format.mimeType ?? "",
-                            quality: format.quality,
-                            url: format.url,
-                            hasAudio: format.hasAudio,
-                            hasVideo: format.hasVideo,
+                    const basic: BasicSource = {
+                        contentLength,
+                        indexRange: format.indexRange ?? {
+                            end: "0",
+                            start: "0",
+                        },
+                        initRange: format.initRange ?? {
+                            end: "0",
+                            start: "0",
+                        },
+                        itag: format.itag,
+                        mimeType: format.mimeType ?? "",
+                        quality: format.quality,
+                        url: format.url,
+                        hasAudio: format.hasAudio,
+                        hasVideo: format.hasVideo,
+                    };
+
+                    if (format.hasVideo && format.hasAudio)
+                        return {
+                            ...basic,
+                            width: format.width ?? 0,
+                            height: format.height ?? 0,
+                            audioChannels: format.audioChannels ?? 0,
                         };
+                    else if (format.hasVideo)
+                        return {
+                            ...basic,
+                            width: format.width ?? 0,
+                            height: format.height ?? 0,
+                        };
+                    else
+                        return {
+                            ...basic,
+                            audioChannels: format.audioChannels ?? 0,
+                        };
+                })
+            );
 
-                        if (format.hasVideo && format.hasAudio)
-                            return {
-                                ...basic,
-                                width: format.width ?? 0,
-                                height: format.height ?? 0,
-                                audioChannels: format.audioChannels ?? 0,
-                            };
-                        else if (format.hasVideo)
-                            return {
-                                ...basic,
-                                width: format.width ?? 0,
-                                height: format.height ?? 0,
-                            };
-                        else
-                            return {
-                                ...basic,
-                                audioChannels: format.audioChannels ?? 0,
-                            };
-                    })
-                );
-
-                return {
-                    formats,
-                    displayImage:
-                        info.videoDetails.thumbnails.map(cutYTImageLink),
-                    title: info.videoDetails.title,
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    standard: formats.find((item) => item.itag === 18)!,
-                };
-            })
-        );
+            return {
+                formats,
+                displayImage: info.videoDetails.thumbnails.map(cutYTImageLink),
+                title: info.videoDetails.title,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                standard: formats.find((item) => item.itag === 18)!,
+            };
+        });
     }
 }
