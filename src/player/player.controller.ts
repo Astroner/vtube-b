@@ -64,20 +64,20 @@ export class PlayerController {
         @Query("type") type?: string
     ) {
         const info = await this.youtube.getVideoInfo(code);
-        const formats =
-            type === "audio"
-                ? info.audioOnly
-                : type === "video"
-                ? info.videoOnly
-                : type === "both"
-                ? info.both
-                : info.all;
 
-        return formats.map((item) => ({
-            itag: item.itag,
-            mime: item.mimeType,
-            quality: item.quality,
-        }));
+        return info.formats
+            .filter((item) => {
+                return;
+                (type === "audio" && item.hasAudio && !item.hasVideo) ||
+                    (type === "video" && !item.hasAudio && item.hasVideo) ||
+                    (type === "both" && item.hasAudio && item.hasVideo) ||
+                    type === "all";
+            })
+            .map((item) => ({
+                itag: item.itag,
+                mime: item.mimeType,
+                quality: item.quality,
+            }));
     }
 
     @Get("/test/:code")

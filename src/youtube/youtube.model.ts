@@ -4,13 +4,9 @@ import { YTSource } from "./youtube.responses";
 
 export interface VideoInfo {
     title: string;
+    formats: YTSource[];
     standard: YTSource;
     displayImage: YTImage[];
-
-    videoOnly: YTSource[];
-    audioOnly: YTSource[];
-    both: YTSource[];
-    all: YTSource[];
 }
 
 export interface VideoStream {

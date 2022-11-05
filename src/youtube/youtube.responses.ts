@@ -4,7 +4,7 @@ export interface BasicSource {
     itag: number;
     url: string;
 
-    contentLength: string;
+    contentLength: number;
 
     initRange: {
         start: string;
@@ -18,6 +18,9 @@ export interface BasicSource {
 
     mimeType: string;
     quality: string;
+
+    hasAudio: boolean;
+    hasVideo: boolean;
 }
 
 export interface YTVideoSource extends BasicSource {
@@ -27,7 +30,6 @@ export interface YTVideoSource extends BasicSource {
 
 export interface YTAudioSource extends BasicSource {
     audioChannels: number;
-    loudnessDb: number;
 }
 
 export type YTSource =
