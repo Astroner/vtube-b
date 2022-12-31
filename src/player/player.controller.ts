@@ -1,4 +1,3 @@
-import { HttpService } from "@nestjs/axios";
 import {
     BadRequestException,
     Controller,
@@ -14,7 +13,7 @@ import { YoutubeService } from "src/youtube/youtube.service";
 
 @Controller("player")
 export class PlayerController {
-    constructor(private youtube: YoutubeService, private http: HttpService) {}
+    constructor(private youtube: YoutubeService) {}
 
     @Get(":code")
     async stream(

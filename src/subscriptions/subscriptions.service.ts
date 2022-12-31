@@ -1,7 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { map } from "rxjs";
-import { extractDataFromResponse } from "src/helpers/extractDataFromResponse";
+import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
 import { Subscriptions } from "./subscriptions.native";
 
 @Injectable()

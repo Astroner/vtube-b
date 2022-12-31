@@ -1,17 +1,22 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
+import { Protected } from "src/user/decorators/protected.decorator";
+import { UserData } from "src/user/decorators/user-data.decorator";
+import { User } from "src/user/user.schema";
 import { RecommendationsService } from "./recommendations.service";
 
 @Controller("recommendations")
 export class RecommendationsController {
     constructor(private recs: RecommendationsService) {}
 
-    @Get("youtube/:psid")
-    getYoutube(@Param("psid") psid: string) {
-        return this.recs.getYoutubeRecommendations(psid);
+    @Protected()
+    @Get("youtube")
+    getYoutube(@UserData() user: User) {
+        return this.recs.getYoutubeRecommendations(user.ytID);
     }
 
-    @Get("music/:psid")
-    getMusic(@Param("psid") psid: string) {
-        return this.recs.getMusicRecommendations(psid);
+    @Protected()
+    @Get("music")
+    getMusic(@UserData() user: User) {
+        return this.recs.getMusicRecommendations(user.ytID);
     }
 }

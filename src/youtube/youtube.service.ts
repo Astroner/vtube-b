@@ -3,7 +3,7 @@ import * as fetcher from "ytdl-core";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 
-import { cutYTImageLink } from "src/helpers/cutYTImageLink";
+import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { CacheService } from "./cache.service";
 import { VideoInfo, VideoStream } from "./youtube.model";
 import { BasicSource, YTSource } from "./youtube.responses";

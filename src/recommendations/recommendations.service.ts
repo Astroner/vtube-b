@@ -2,8 +2,8 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 
-import { cutYTImageLink } from "src/helpers/cutYTImageLink";
-import { extractDataFromResponse } from "src/helpers/extractDataFromResponse";
+import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
+import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
 import {
     DynamicPlaylistRecommendation,
     MusicCategories,
