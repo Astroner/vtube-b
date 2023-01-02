@@ -8,11 +8,12 @@ import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
 import { YTImage } from "src/Types";
-import { ListItem, Playlist } from "./playlist.model";
+import { ListItem, Playlist, PlaylistWithID } from "./playlist.model";
 import {
     DynamicPlaylist,
     PlaylistData,
     PlaylistError,
+    UserPlaylists,
 } from "./playlist.native";
 
 @Injectable()
@@ -113,6 +114,47 @@ export class PlaylistService {
                         display,
                         list,
                     };
+                })
+            );
+    }
+
+    getAll(ytID: string) {
+        return this.http
+            .get("https://www.youtube.com/feed/library", {
+                headers: {
+                    cookie: `__Secure-3PSID=${ytID};`,
+                },
+            })
+            .pipe(
+                extractDataFromResponse<UserPlaylists>(),
+                map((data) => {
+                    return data.contents.twoColumnBrowseResultsRenderer.tabs[0]
+                        .tabRenderer.content.sectionListRenderer.contents;
+                }),
+                map((items) => {
+                    const userPlaylists: PlaylistWithID[] = [];
+
+                    for (const item of items) {
+                        if (!item.itemSectionRenderer.targetId) continue;
+                        const sectionItems =
+                            item.itemSectionRenderer.contents[0].shelfRenderer
+                                .content.gridRenderer.items;
+                        for (const sectionItem of sectionItems) {
+                            if (!("gridPlaylistRenderer" in sectionItem))
+                                continue;
+                            userPlaylists.push({
+                                display:
+                                    sectionItem.gridPlaylistRenderer.thumbnail
+                                        .thumbnails,
+                                list: sectionItem.gridPlaylistRenderer
+                                    .playlistId,
+                                title: sectionItem.gridPlaylistRenderer.title
+                                    .simpleText,
+                            });
+                        }
+                    }
+
+                    return userPlaylists;
                 })
             );
     }

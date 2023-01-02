@@ -96,3 +96,62 @@ export interface DynamicPlaylist {
         };
     };
 }
+
+export interface UserPlaylists {
+    contents: {
+        twoColumnBrowseResultsRenderer: {
+            tabs: [
+                {
+                    tabRenderer: {
+                        content: {
+                            sectionListRenderer: {
+                                contents: Array<{
+                                    itemSectionRenderer: {
+                                        sectionIdentifier?: "library-recent";
+                                        targetId?: "library-playlists-shelf";
+                                        contents: [
+                                            {
+                                                shelfRenderer: {
+                                                    content: {
+                                                        gridRenderer: {
+                                                            items: Array<
+                                                                | {
+                                                                      gridVideoRenderer: {
+                                                                          title: {
+                                                                              runs: Array<{
+                                                                                  text: string;
+                                                                              }>;
+                                                                          };
+                                                                      };
+                                                                      videoId: string;
+                                                                      thumbnail: {
+                                                                          thumbnails: YTImage[];
+                                                                      };
+                                                                  }
+                                                                | {
+                                                                      gridPlaylistRenderer: {
+                                                                          title: {
+                                                                              simpleText: string;
+                                                                          };
+                                                                          playlistId: string;
+                                                                          thumbnail: {
+                                                                              thumbnails: YTImage[];
+                                                                          };
+                                                                      };
+                                                                  }
+                                                            >;
+                                                        };
+                                                    };
+                                                };
+                                            }
+                                        ];
+                                    };
+                                }>;
+                            };
+                        };
+                    };
+                }
+            ];
+        };
+    };
+}

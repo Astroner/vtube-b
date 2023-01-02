@@ -18,6 +18,12 @@ export class PlaylistController {
         return this.playlist.getDynamicPlaylist(user.ytID, list, code);
     }
 
+    @Protected()
+    @Get("all")
+    getAllPlaylists(@UserData() user: User) {
+        return this.playlist.getAll(user.ytID);
+    }
+
     @Get(":list")
     getPlaylist(@Param("list") list: string) {
         return this.playlist.getPlaylist(list);

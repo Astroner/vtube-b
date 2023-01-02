@@ -6,6 +6,12 @@ export interface Playlist {
     list: ListItem[];
 }
 
+export interface PlaylistWithID {
+    title: string;
+    display: YTImage[];
+    list: string;
+}
+
 export interface ListItem {
     title: string;
     code: string;
