@@ -74,7 +74,7 @@ export interface MusicTwoRowItemRenderer {
         };
         navigationEndpoint: {
             watchEndpoint: {
-                playlistId: string;
+                playlistId?: string;
                 videoId: string;
             };
         };

@@ -21,7 +21,7 @@ export interface DynamicPlaylistRecommendation {
 
 export interface MusicCategory {
     title: string;
-    items: DynamicPlaylistRecommendation[];
+    items: Recommendation[];
 }
 
 export interface MusicCategories {

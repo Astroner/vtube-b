@@ -4,11 +4,7 @@ import { map, Observable } from "rxjs";
 
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
-import {
-    DynamicPlaylistRecommendation,
-    MusicCategories,
-    Recommendation,
-} from "./recommendations.model";
+import { MusicCategories, Recommendation } from "./recommendations.model";
 import {
     MusicRecommendations,
     YoutubeRecommendations,
@@ -98,14 +94,14 @@ export class RecommendationsService {
                 map((data: MusicRecommendations | null) => {
                     if (!data)
                         throw new InternalServerErrorException(
-                            "CANNOT_PARSE_PLAyLIST"
+                            "CANNOT_PARSE_PLAYLIST"
                         );
 
                     return {
                         categories:
                             data.contents.singleColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.map(
                                 (category) => {
-                                    const items: DynamicPlaylistRecommendation[] =
+                                    const items: MusicCategories["categories"][0]["items"] =
                                         [];
 
                                     for (const item of category
@@ -119,24 +115,41 @@ export class RecommendationsService {
                                             )
                                                 continue;
 
-                                            items.push({
-                                                type: "DYNAMIC_PLAYLIST",
-                                                title: item
-                                                    .musicTwoRowItemRenderer
-                                                    .title.runs[0].text,
-                                                display:
-                                                    item.musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                                        cutYTImageLink
-                                                    ),
-                                                list: item
-                                                    .musicTwoRowItemRenderer
+                                            const list =
+                                                item.musicTwoRowItemRenderer
                                                     .navigationEndpoint
-                                                    .watchEndpoint.playlistId,
-                                                code: item
-                                                    .musicTwoRowItemRenderer
+                                                    .watchEndpoint.playlistId;
+
+                                            const code =
+                                                item.musicTwoRowItemRenderer
                                                     .navigationEndpoint
-                                                    .watchEndpoint.videoId,
-                                            });
+                                                    .watchEndpoint.videoId;
+
+                                            const display =
+                                                item.musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                    cutYTImageLink
+                                                );
+
+                                            const title =
+                                                item.musicTwoRowItemRenderer
+                                                    .title.runs[0].text;
+
+                                            if (list) {
+                                                items.push({
+                                                    type: "DYNAMIC_PLAYLIST",
+                                                    code,
+                                                    list,
+                                                    display,
+                                                    title,
+                                                });
+                                            } else {
+                                                items.push({
+                                                    type: "VIDEO",
+                                                    code,
+                                                    display,
+                                                    title,
+                                                });
+                                            }
                                         } else if (
                                             "musicResponsiveListItemRenderer" in
                                             item

@@ -2,6 +2,7 @@ import {
     BadRequestException,
     Injectable,
     NotAcceptableException,
+    NotFoundException,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -61,5 +62,15 @@ export class UserService {
 
     async getUserById(id: string) {
         return await this.userModel.findById(id);
+    }
+
+    async getUserToken(username: string) {
+        const user = await this.userModel.findOne({
+            username,
+        });
+
+        if (!user) throw new NotFoundException();
+
+        return this.jwt.signAsync({ id: user.id });
     }
 }

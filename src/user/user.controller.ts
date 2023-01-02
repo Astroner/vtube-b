@@ -1,10 +1,5 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Post,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { env } from "src/env";
 import { Protected } from "src/user/decorators/protected.decorator";
 import { UserData } from "./decorators/user-data.decorator";
 import { CreateUserDTO, AuthDTO } from "./user.dto";
@@ -34,5 +29,12 @@ export class UserController {
         return {
             username: user.username,
         };
+    }
+
+    @Get("dev-token/:name")
+    async getDevToken(@Param("name") name: string) {
+        if (env.NODE_ENV !== "development") return "FUCK YOU :)";
+
+        return this.userService.getUserToken(name);
     }
 }

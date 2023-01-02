@@ -12,5 +12,6 @@ COPY . .
 RUN yarn build
 
 EXPOSE 8080
+ENV NODE_ENV=production
 ENV PORT=8080
 CMD ["yarn", "start"]
