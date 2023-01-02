@@ -86,7 +86,10 @@ export class YoutubeService {
                                 })
                             );
                             if (data.headers["content-range"]) {
-                                contentLength = +data.headers["content-range"].split("/")[1];
+                                contentLength =
+                                    +data.headers["content-range"].split(
+                                        "/"
+                                    )[1];
                             } else {
                                 return null as any;
                             }
@@ -133,7 +136,7 @@ export class YoutubeService {
                         };
                 })
             );
-            const filteredFormats = formats.filter(a => !!a);
+            const filteredFormats = formats.filter((a) => !!a);
 
             return {
                 formats: filteredFormats,
