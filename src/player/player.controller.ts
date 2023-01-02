@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Headers,
+    InternalServerErrorException,
     Param,
     Query,
     Response,
@@ -49,12 +50,17 @@ export class PlayerController {
 
     @Get("info/:code")
     async getInfo(@Param("code") code: string) {
-        const data = await this.youtube.getVideoInfo(code);
+        try {
+            const data = await this.youtube.getVideoInfo(code);
 
-        return {
-            title: data.title,
-            displayImage: data.displayImage,
-        };
+            return {
+                title: data.title,
+                displayImage: data.displayImage,
+            };
+        } catch (e) {
+            console.log(e);
+            throw new InternalServerErrorException("KEK");
+        }
     }
 
     @Get("formats/:code")

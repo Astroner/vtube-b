@@ -77,15 +77,22 @@ export class YoutubeService {
                     if (format.contentLength) {
                         contentLength = +format.contentLength;
                     } else {
-                        const data = await firstValueFrom(
-                            this.http.get(format.url, {
-                                headers: {
-                                    Range: "bytes=0-1",
-                                },
-                            })
-                        );
-                        contentLength =
-                            +data.headers["content-range"].split("/")[1];
+                        try {
+                            const data = await firstValueFrom(
+                                this.http.get(format.url, {
+                                    headers: {
+                                        Range: "bytes=0-1",
+                                    },
+                                })
+                            );
+                            if (data.headers["content-range"]) {
+                                contentLength = +data.headers["content-range"].split("/")[1];
+                            } else {
+                                return null as any;
+                            }
+                        } catch (e) {
+                            return null as any;
+                        }
                     }
 
                     const basic: BasicSource = {
@@ -126,13 +133,14 @@ export class YoutubeService {
                         };
                 })
             );
+            const filteredFormats = formats.filter(a => !!a);
 
             return {
-                formats,
+                formats: filteredFormats,
                 displayImage: info.videoDetails.thumbnails.map(cutYTImageLink),
                 title: info.videoDetails.title,
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                standard: formats.find((item) => item.itag === 18)!,
+                standard: filteredFormats.find((item) => item.itag === 18)!,
             };
         });
     }

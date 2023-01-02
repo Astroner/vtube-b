@@ -97,7 +97,7 @@ export interface DynamicPlaylist {
     };
 }
 
-export interface UserPlaylists {
+export interface UserLibrary {
     contents: {
         twoColumnBrowseResultsRenderer: {
             tabs: [

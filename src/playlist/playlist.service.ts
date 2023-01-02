@@ -13,7 +13,7 @@ import {
     DynamicPlaylist,
     PlaylistData,
     PlaylistError,
-    UserPlaylists,
+    UserLibrary,
 } from "./playlist.native";
 
 @Injectable()
@@ -126,7 +126,7 @@ export class PlaylistService {
                 },
             })
             .pipe(
-                extractDataFromResponse<UserPlaylists>(),
+                extractDataFromResponse<UserLibrary>(),
                 map((data) => {
                     return data.contents.twoColumnBrowseResultsRenderer.tabs[0]
                         .tabRenderer.content.sectionListRenderer.contents;
