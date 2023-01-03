@@ -21,7 +21,7 @@ export class PlayerController {
         @Response() res: ServerResponse,
         @Param("code") code: string,
         @Headers("range") range: string,
-        @Query("itag") itag?: string
+        @Query("itag") itag?: string 
     ) {
         if (!range) throw new BadRequestException("Range is not provided");
 
