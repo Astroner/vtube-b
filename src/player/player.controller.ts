@@ -1,24 +1,27 @@
+import { HttpService } from "@nestjs/axios";
 import {
     BadRequestException,
     Controller,
     Get,
+    Header,
     Headers,
     InternalServerErrorException,
     Param,
     Query,
-    Response,
+    Res,
 } from "@nestjs/common";
-import { Response as ServerResponse } from "express";
+import { Response } from "express";
+import { lastValueFrom } from "rxjs";
 
 import { YoutubeService } from "src/youtube/youtube.service";
 
 @Controller("player")
 export class PlayerController {
-    constructor(private youtube: YoutubeService) {}
+    constructor(private youtube: YoutubeService, private http: HttpService) {}
 
     @Get(":code")
     async stream(
-        @Response() res: ServerResponse,
+        @Res() res: Response,
         @Param("code") code: string,
         @Headers("range") range: string,
         @Query("itag") itag?: string
@@ -84,6 +87,20 @@ export class PlayerController {
                 mime: item.mimeType,
                 quality: item.quality,
             }));
+    }
+
+    @Get("thumbnail/:code")
+    async getImage(@Param("code") code: string, @Res() res: Response) {
+        const info = await this.youtube.getVideoInfo(code);
+        const { data, headers } = await lastValueFrom(
+            this.http.get(info.displayImage[0].url, {
+                responseType: "stream",
+            })
+        );
+        res.setHeader("content-type", headers["content-type"]);
+        res.setHeader("content-length", headers["content-length"]);
+        console.log(headers);
+        data.pipe(res);
     }
 
     @Get("/test/:code")
