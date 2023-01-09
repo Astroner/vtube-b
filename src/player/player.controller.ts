@@ -86,6 +86,7 @@ export class PlayerController {
                 itag: item.itag,
                 mime: item.mimeType,
                 quality: item.quality,
+                contentLength: item.contentLength,
             }));
     }
 
