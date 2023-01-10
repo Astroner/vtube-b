@@ -3,7 +3,6 @@ import {
     BadRequestException,
     Controller,
     Get,
-    Header,
     Headers,
     InternalServerErrorException,
     Param,
@@ -100,7 +99,6 @@ export class PlayerController {
         );
         res.setHeader("content-type", headers["content-type"]);
         res.setHeader("content-length", headers["content-length"]);
-        console.log(headers);
         data.pipe(res);
     }
 
