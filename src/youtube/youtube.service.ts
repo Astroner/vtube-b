@@ -1,6 +1,10 @@
 import { HttpService } from "@nestjs/axios";
 import * as fetcher from "ytdl-core";
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+} from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";

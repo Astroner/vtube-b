@@ -4,7 +4,6 @@ import {
     Controller,
     Get,
     Headers,
-    InternalServerErrorException,
     Param,
     Query,
     Res,
