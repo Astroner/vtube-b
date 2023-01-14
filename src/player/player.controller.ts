@@ -52,17 +52,12 @@ export class PlayerController {
 
     @Get("info/:code")
     async getInfo(@Param("code") code: string) {
-        try {
-            const data = await this.youtube.getVideoInfo(code);
+        const data = await this.youtube.getVideoInfo(code);
 
-            return {
-                title: data.title,
-                displayImage: data.displayImage,
-            };
-        } catch (e) {
-            console.log(e);
-            throw new InternalServerErrorException("KEK");
-        }
+        return {
+            title: data.title,
+            displayImage: data.displayImage,
+        };
     }
 
     @Get("formats/:code")

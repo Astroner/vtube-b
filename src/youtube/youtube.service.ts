@@ -1,6 +1,6 @@
 import { HttpService } from "@nestjs/axios";
 import * as fetcher from "ytdl-core";
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
@@ -69,8 +69,9 @@ export class YoutubeService {
         }
     }
 
-    private fetchInfo(code: string): Promise<VideoInfo> {
-        return fetcher.getInfo(code).then(async (info): Promise<VideoInfo> => {
+    private async fetchInfo(code: string): Promise<VideoInfo> {
+        try {
+            const info = await fetcher.getInfo(code);
             const formats: YTSource[] = await Promise.all(
                 info.formats.map(async (format): Promise<YTSource> => {
                     let contentLength: number;
@@ -145,6 +146,11 @@ export class YoutubeService {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 standard: filteredFormats.find((item) => item.itag === 18)!,
             };
-        });
+        } catch (e: any) {
+            if (e.message.search("No video id found") !== -1) {
+                throw new NotFoundException();
+            }
+            throw new InternalServerErrorException();
+        }
     }
 }
