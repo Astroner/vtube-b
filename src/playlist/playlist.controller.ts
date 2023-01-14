@@ -1,4 +1,8 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import { Controller, Get, Param, Res } from "@nestjs/common";
+import { Response } from "express";
+import { lastValueFrom } from "rxjs";
+
 import { Protected } from "src/user/decorators/protected.decorator";
 import { UserData } from "src/user/decorators/user-data.decorator";
 import { User } from "src/user/user.schema";
@@ -6,7 +10,7 @@ import { PlaylistService } from "./playlist.service";
 
 @Controller("playlist")
 export class PlaylistController {
-    constructor(private playlist: PlaylistService) {}
+    constructor(private playlist: PlaylistService, private http: HttpService) {}
 
     @Protected()
     @Get("dynamic/:list/:code")
@@ -22,6 +26,19 @@ export class PlaylistController {
     @Get("all")
     getAllPlaylists(@UserData() user: User) {
         return this.playlist.getAll(user.ytID);
+    }
+
+    @Get("thumbnail/:list")
+    async getThumbnail(@Param("list") list: string, @Res() res: Response) {
+        const playlist = await lastValueFrom(this.playlist.getPlaylist(list));
+        const { data, headers } = await lastValueFrom(
+            this.http.get(playlist.display[0].url, {
+                responseType: "stream",
+            })
+        );
+        res.setHeader("content-type", headers["content-type"]);
+        res.setHeader("content-length", headers["content-length"]);
+        data.pipe(res);
     }
 
     @Get(":list")
