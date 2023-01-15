@@ -151,6 +151,10 @@ export class YoutubeService {
                 standard: filteredFormats.find((item) => item.itag === 18)!,
             };
         } catch (e: any) {
+            // "This video may not be suitable for some users" yt code;
+            if (e.statusCode === 410) {
+                throw new NotFoundException();
+            }
             if (e.message.search("No video id found") !== -1) {
                 throw new NotFoundException();
             }
