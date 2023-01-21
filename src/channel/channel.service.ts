@@ -256,4 +256,112 @@ export class ChannelService {
                 })
             );
     }
+
+    getYoutubeChannelStreams(id: string) {
+        return this.http
+            .get<string>(`https://youtube.com/channel/${id}/streams/`, {
+                headers: {
+                    cookie: "PREF=hl=en",
+                },
+            })
+            .pipe(
+                extractDataFromResponse<YTChannelVideos>(),
+                map((data): Page<YTVideo> => {
+                    const items: YTVideo[] = [];
+                    let nextToken: null | string = null;
+
+                    const tab =
+                        data.contents.twoColumnBrowseResultsRenderer.tabs.find(
+                            (t) => t.tabRenderer.content
+                        );
+
+                    if (!tab)
+                        throw new InternalServerErrorException(
+                            "FAILED_TO_FIND_TAB"
+                        );
+
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    for (const item of tab.tabRenderer.content!.richGridRenderer
+                        .contents) {
+                        if ("continuationItemRenderer" in item) {
+                            nextToken =
+                                item.continuationItemRenderer
+                                    .continuationEndpoint.continuationCommand
+                                    .token;
+                        } else {
+                            items.push({
+                                code: item.richItemRenderer.content
+                                    .videoRenderer.videoId,
+                                display:
+                                    item.richItemRenderer.content.videoRenderer
+                                        .thumbnail.thumbnails,
+                                title: item.richItemRenderer.content
+                                    .videoRenderer.title.runs[0].text,
+                            });
+                        }
+                    }
+
+                    return {
+                        items,
+                        next: nextToken
+                            ? {
+                                  key: nextToken,
+                              }
+                            : null,
+                    };
+                })
+            );
+    }
+
+    continueYoutubeChannelStreams(key: string) {
+        return this.http
+            .post<YTChannelVideosContinuation>(
+                "https://www.youtube.com/youtubei/v1/browse",
+                {
+                    continuation: key,
+                    context: {
+                        client: {
+                            hl: "en",
+                            clientName: "WEB",
+                            clientVersion: "2.20230120.00.00",
+                        },
+                    },
+                }
+            )
+            .pipe(
+                map((res): Page<YTVideo> => {
+                    const items: YTVideo[] = [];
+                    let nextToken: null | string = null;
+
+                    for (const item of res.data.onResponseReceivedActions[0]
+                        .appendContinuationItemsAction.continuationItems) {
+                        if ("continuationItemRenderer" in item) {
+                            nextToken =
+                                item.continuationItemRenderer
+                                    .continuationEndpoint.continuationCommand
+                                    .token;
+                        } else {
+                            items.push({
+                                code: item.richItemRenderer.content
+                                    .videoRenderer.videoId,
+                                display:
+                                    item.richItemRenderer.content.videoRenderer
+                                        .thumbnail.thumbnails,
+                                title: item.richItemRenderer.content
+                                    .videoRenderer.title.runs[0].text,
+                            });
+                        }
+                    }
+
+                    return {
+                        items,
+                        next: nextToken
+                            ? {
+                                  key: nextToken,
+                              }
+                            : null,
+                    };
+                })
+            );
+    }
 }

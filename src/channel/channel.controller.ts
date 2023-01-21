@@ -29,4 +29,14 @@ export class ChannelController {
     continueYoutubePlaylists(@Param("key") key: string) {
         return this.service.continueYoutubeChannelPlaylists(key);
     }
+
+    @Get("youtube/streams/:id")
+    getYoutubeStreams(@Param("id") channel: string) {
+        return this.service.getYoutubeChannelStreams(channel);
+    }
+
+    @Get("youtube/streams/continue/:key")
+    continueYoutubeStreams(@Param("key") key: string) {
+        return this.service.continueYoutubeChannelStreams(key);
+    }
 }
