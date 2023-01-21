@@ -4,7 +4,7 @@ export type ChannelSearchEntry = {
     type: "CHANNEL";
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     tag: string;
     display: YTImage[];
 };

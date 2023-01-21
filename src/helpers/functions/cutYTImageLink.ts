@@ -1,10 +1,9 @@
 import { YTImage } from "src/Types";
 
 export const cutYTImageLink = (img: YTImage): YTImage => {
-    const url = new URL(img.url);
-    url.search = "";
+    const addr = img.url.slice(0, 2) === "//" ? `http:${img.url}` : img.url;
     return {
         ...img,
-        url: url.toString(),
+        url: addr,
     };
 };

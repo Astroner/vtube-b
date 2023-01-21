@@ -1,6 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map } from "rxjs";
+import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
 import {
@@ -34,6 +35,7 @@ export class SearchService {
                         .sectionListRenderer.contents[0].itemSectionRenderer
                         .contents) {
                         if ("channelRenderer" in item) {
+                            console.log(item);
                             result.push({
                                 type: "CHANNEL",
                                 id: item.channelRenderer.channelId,
@@ -42,9 +44,11 @@ export class SearchService {
                                 title: item.channelRenderer.title.simpleText,
                                 description:
                                     item.channelRenderer.descriptionSnippet
-                                        .runs[0].text,
+                                        ?.runs[0].text ?? null,
                                 display:
-                                    item.channelRenderer.thumbnail.thumbnails,
+                                    item.channelRenderer.thumbnail.thumbnails.map(
+                                        cutYTImageLink
+                                    ),
                             });
                         } else if ("videoRenderer" in item) {
                             if (
@@ -61,7 +65,9 @@ export class SearchService {
                                 code: item.videoRenderer.videoId,
                                 title: item.videoRenderer.title.runs[0].text,
                                 display:
-                                    item.videoRenderer.thumbnail.thumbnails,
+                                    item.videoRenderer.thumbnail.thumbnails.map(
+                                        cutYTImageLink
+                                    ),
                             });
                         } else if ("shelfRenderer" in item) {
                             const items: VideoSearchEntry[] = [];
@@ -81,7 +87,9 @@ export class SearchService {
                                     type: "VIDEO",
                                     code: vod.videoRenderer.videoId,
                                     display:
-                                        vod.videoRenderer.thumbnail.thumbnails,
+                                        vod.videoRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
                                     title: vod.videoRenderer.title.runs[0].text,
                                 });
                             }
@@ -155,9 +163,9 @@ export class SearchService {
                                 code: vod.musicResponsiveListItemRenderer
                                     .playlistItemData.videoId,
                                 display:
-                                    vod.musicResponsiveListItemRenderer
-                                        .thumbnail.musicThumbnailRenderer
-                                        .thumbnail.thumbnails,
+                                    vod.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                        cutYTImageLink
+                                    ),
                                 title: vod.musicResponsiveListItemRenderer
                                     .flexColumns[0]
                                     .musicResponsiveListItemFlexColumnRenderer

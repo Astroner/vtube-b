@@ -56,7 +56,7 @@ export type ChannelRenderer = {
         subscriberCountText: {
             simpleText: string;
         };
-        descriptionSnippet: {
+        descriptionSnippet?: {
             runs: [
                 {
                     text: string;
