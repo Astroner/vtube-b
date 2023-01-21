@@ -9,6 +9,7 @@
     - [Personalization](#personalization)
     - [Parser details](#parser-details)
        - [Youtube](#youtube)
+          - [Pagination](#pagination)
        - [Youtube Music](#youtube-music)
 
 
@@ -43,6 +44,27 @@ These services identify users and their preferences with specific cookies:
 ##### Youtube
 Youtube uses some kind of SSR strategy, they add initial page data to some variables, in most cases it is **ytInitialData**. 
 To extract this data from AxiosResponse we use **extractDataFromResponse()** rx-js operator.
+
+###### Pagination
+Obviously, Youtube wont give you all the info at once, they use tricky pagination to optimize server load.
+Initial data could be fetched with basic get request to specific page, channel videos for example *youtube.com/channel/ID/videos/*.
+With **extractDataFromResponse()** operator we can extract actual data, but we will get only around 30 videos.
+To get next page of videos you need to make "continuation" request with specific token.
+Basically, continuation request is just a post request to *https://www.youtube.com/youtubei/v1/browse* with specific payload:
+```ts
+type Payload = {
+   continuation: string;
+   context: {
+      client: {
+         hl?: string,
+         clientName: "WEB",
+         clientVersion: "2.20230120.00.00",
+      }
+   }
+}
+```
+Here in **context.client.hl** you can specify locale ("en" for example) but all other fields in **context.client** are required and should be like it's described in type.
+The only problem here is **continuation** field. Well, usually, if you fetch something that can be continued, the last item will be **continuationItemRenderer**, which contains **continuationCommand.token** which is the **continuation** field.
 
 ##### Youtube Music
 Youtube Music uses different kind of SSR, and it is kinda tricky. 

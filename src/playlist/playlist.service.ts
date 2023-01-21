@@ -7,8 +7,8 @@ import {
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
-import { YTImage } from "src/Types";
-import { ListItem, Playlist, PlaylistWithID } from "./playlist.model";
+import { YTImage, YTVideo } from "src/Types";
+import { Playlist, PlaylistWithID } from "./playlist.model";
 import {
     DynamicPlaylist,
     PlaylistData,
@@ -80,7 +80,7 @@ export class PlaylistService {
                             .playlist;
 
                     let display: YTImage[] = [];
-                    const list: ListItem[] = [];
+                    const list: YTVideo[] = [];
 
                     for (const item of playlist.contents) {
                         // filter "YT is not avaliable on your device" video

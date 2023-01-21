@@ -35,7 +35,6 @@ export class SearchService {
                         .sectionListRenderer.contents[0].itemSectionRenderer
                         .contents) {
                         if ("channelRenderer" in item) {
-                            console.log(item);
                             result.push({
                                 type: "CHANNEL",
                                 id: item.channelRenderer.channelId,
