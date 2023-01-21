@@ -4,6 +4,7 @@ import { env } from "src/env";
 import { PlayerModule } from "src/player/player.module";
 import { PlaylistModule } from "src/playlist/playlist.module";
 import { RecommendationsModule } from "src/recommendations/recommendations.module";
+import { SearchModule } from "src/search/search.module";
 import { SubscriptionsModule } from "src/subscriptions/subscriptions.module";
 import { UserModule } from "src/user/user.module";
 
@@ -15,6 +16,7 @@ import { UserModule } from "src/user/user.module";
         SubscriptionsModule,
         MongooseModule.forRoot(env.MONGO_URL),
         UserModule,
+        SearchModule,
     ],
 })
 export class AppModule {}

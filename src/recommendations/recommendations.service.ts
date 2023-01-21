@@ -18,12 +18,13 @@ export class RecommendationsService {
         return this.http
             .get<string>("https://youtube.com", {
                 headers: {
-                    cookie: `__Secure-3PSID=${psid};`,
+                    cookie: `__Secure-3PSID=${psid}; PREF=hl=en`,
                 },
             })
             .pipe(
                 extractDataFromResponse<YoutubeRecommendations>(),
                 map((data) => {
+                    // return data as any;
                     const videos =
                         data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.richGridRenderer.contents.slice(
                             0,
