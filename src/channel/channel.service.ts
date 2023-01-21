@@ -289,6 +289,17 @@ export class ChannelService {
                                     .continuationEndpoint.continuationCommand
                                     .token;
                         } else {
+                            if (
+                                item.richItemRenderer.content.videoRenderer.thumbnailOverlays.find(
+                                    (ov) =>
+                                        "thumbnailOverlayTimeStatusRenderer" in
+                                            ov &&
+                                        ov.thumbnailOverlayTimeStatusRenderer
+                                            .style === "LIVE"
+                                )
+                            )
+                                continue;
+
                             items.push({
                                 code: item.richItemRenderer.content
                                     .videoRenderer.videoId,

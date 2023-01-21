@@ -49,6 +49,17 @@ export type YTChannelVideos = YTChannelBasic & {
                                                           }
                                                       ];
                                                   };
+                                                  thumbnailOverlays: Array<
+                                                      | { randomShit: unknown }
+                                                      | {
+                                                            thumbnailOverlayTimeStatusRenderer: {
+                                                                /**
+                                                                 * If style === LIVE then its actual live stream.
+                                                                 */
+                                                                style: string;
+                                                            };
+                                                        }
+                                                  >;
                                               };
                                           };
                                       };
