@@ -87,7 +87,7 @@ export class PlayerController {
     async getImage(@Param("code") code: string, @Res() res: Response) {
         const info = await this.youtube.getVideoInfo(code);
         const { data, headers } = await lastValueFrom(
-            this.http.get(info.displayImage[0].url, {
+            this.http.get(info.displayImage[info.displayImage.length - 1].url, {
                 responseType: "stream",
             })
         );

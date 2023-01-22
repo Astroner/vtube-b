@@ -32,7 +32,7 @@ export class PlaylistController {
     async getThumbnail(@Param("list") list: string, @Res() res: Response) {
         const playlist = await lastValueFrom(this.playlist.getPlaylist(list));
         const { data, headers } = await lastValueFrom(
-            this.http.get(playlist.display[0].url, {
+            this.http.get(playlist.display[playlist.display.length - 1].url, {
                 responseType: "stream",
             })
         );
