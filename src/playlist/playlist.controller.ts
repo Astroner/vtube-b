@@ -3,9 +3,11 @@ import { Controller, Get, Param, Res } from "@nestjs/common";
 import { Response } from "express";
 import { lastValueFrom } from "rxjs";
 
+import { getMidItem } from "src/helpers/functions/getMidItem";
 import { Protected } from "src/user/decorators/protected.decorator";
 import { UserData } from "src/user/decorators/user-data.decorator";
 import { User } from "src/user/user.schema";
+
 import { PlaylistService } from "./playlist.service";
 
 @Controller("playlist")
@@ -32,7 +34,7 @@ export class PlaylistController {
     async getThumbnail(@Param("list") list: string, @Res() res: Response) {
         const playlist = await lastValueFrom(this.playlist.getPlaylist(list));
         const { data, headers } = await lastValueFrom(
-            this.http.get(playlist.display[playlist.display.length - 1].url, {
+            this.http.get(getMidItem(playlist.display).url, {
                 responseType: "stream",
             })
         );

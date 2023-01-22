@@ -11,6 +11,7 @@ import {
 import { Response } from "express";
 import { lastValueFrom } from "rxjs";
 
+import { getMidItem } from "src/helpers/functions/getMidItem";
 import { YoutubeService } from "src/youtube/youtube.service";
 
 @Controller("player")
@@ -87,7 +88,7 @@ export class PlayerController {
     async getImage(@Param("code") code: string, @Res() res: Response) {
         const info = await this.youtube.getVideoInfo(code);
         const { data, headers } = await lastValueFrom(
-            this.http.get(info.displayImage[info.displayImage.length - 1].url, {
+            this.http.get(getMidItem(info.displayImage).url, {
                 responseType: "stream",
             })
         );
