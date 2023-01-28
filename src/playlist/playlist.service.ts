@@ -1,8 +1,8 @@
 import { HttpService } from "@nestjs/axios";
 import {
-    BadRequestException,
     Injectable,
     InternalServerErrorException,
+    NotFoundException,
 } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
@@ -50,7 +50,7 @@ export class PlaylistService {
                             ),
                         };
                     }
-                    throw new BadRequestException(json.alerts);
+                    throw new NotFoundException();
                 })
             );
     }
@@ -74,7 +74,12 @@ export class PlaylistService {
                         throw new InternalServerErrorException(
                             "CANNOT_PARSE_DYNAMIC_PLAYLIST"
                         );
-                    // return data as any;
+
+                    if (
+                        !("playlist" in data.contents.twoColumnWatchNextResults)
+                    )
+                        throw new NotFoundException();
+
                     const playlist =
                         data.contents.twoColumnWatchNextResults.playlist
                             .playlist;
