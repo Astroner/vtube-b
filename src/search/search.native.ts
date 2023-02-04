@@ -104,44 +104,49 @@ export type MusicSearchResult = {
                     tabRenderer: {
                         content: {
                             sectionListRenderer: {
-                                contents: Array<{
-                                    musicShelfRenderer: {
-                                        title: {
-                                            runs: [
-                                                {
-                                                    text: string;
-                                                }
-                                            ];
-                                        };
-                                        contents: Array<{
-                                            musicResponsiveListItemRenderer: {
-                                                thumbnail: {
-                                                    musicThumbnailRenderer: {
-                                                        thumbnail: {
-                                                            thumbnails: YTImage[];
-                                                        };
-                                                    };
-                                                };
-                                                playlistItemData?: {
-                                                    videoId: string;
-                                                };
-                                                flexColumns: [
-                                                    {
-                                                        musicResponsiveListItemFlexColumnRenderer: {
-                                                            text: {
-                                                                runs: [
-                                                                    {
-                                                                        text: string;
-                                                                    }
-                                                                ];
-                                                            };
-                                                        };
-                                                    }
-                                                ];
-                                            };
-                                        }>;
-                                    };
-                                }>;
+                                contents: Array<
+                                    | {
+                                          itemSectionRenderer: unknown;
+                                      }
+                                    | {
+                                          musicShelfRenderer: {
+                                              title: {
+                                                  runs: [
+                                                      {
+                                                          text: string;
+                                                      }
+                                                  ];
+                                              };
+                                              contents: Array<{
+                                                  musicResponsiveListItemRenderer: {
+                                                      thumbnail: {
+                                                          musicThumbnailRenderer: {
+                                                              thumbnail: {
+                                                                  thumbnails: YTImage[];
+                                                              };
+                                                          };
+                                                      };
+                                                      playlistItemData?: {
+                                                          videoId: string;
+                                                      };
+                                                      flexColumns: [
+                                                          {
+                                                              musicResponsiveListItemFlexColumnRenderer: {
+                                                                  text: {
+                                                                      runs: [
+                                                                          {
+                                                                              text: string;
+                                                                          }
+                                                                      ];
+                                                                  };
+                                                              };
+                                                          }
+                                                      ];
+                                                  };
+                                              }>;
+                                          };
+                                      }
+                                >;
                             };
                         };
                     };

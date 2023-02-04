@@ -150,6 +150,8 @@ export class SearchService {
                         .contents) {
                         const items: VideoSearchEntry[] = [];
 
+                        if (!("musicShelfRenderer" in item)) continue;
+
                         for (const vod of item.musicShelfRenderer.contents) {
                             // here we filter everything but videos
                             if (
