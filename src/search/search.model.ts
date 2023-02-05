@@ -5,7 +5,7 @@ export type ChannelSearchEntry = {
     id: string;
     title: string;
     description: string | null;
-    tag: string;
+    tag: string | null;
     display: YTImage[];
 };
 
@@ -16,13 +16,21 @@ export type VideoSearchEntry = {
     display: YTImage[];
 };
 
+export type PlaylistSearchEntry = {
+    type: "PLAYLIST";
+    title: string;
+    list: string;
+    display: YTImage[];
+};
+
 export type CollectionSearchEntry = {
     type: "COLLECTION";
     title: string;
-    items: VideoSearchEntry[];
+    items: Array<ChannelSearchEntry | VideoSearchEntry | PlaylistSearchEntry>;
 };
 
 export type SearchEntry =
     | ChannelSearchEntry
     | VideoSearchEntry
-    | CollectionSearchEntry;
+    | CollectionSearchEntry
+    | PlaylistSearchEntry;

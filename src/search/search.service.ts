@@ -9,7 +9,12 @@ import {
     SearchEntry,
     VideoSearchEntry,
 } from "./search.model";
-import { MusicSearchResult, YoutubeSearchResult } from "./search.native";
+import {
+    isArtistTemplate,
+    isAudioTemplate,
+    MusicSearchResult,
+    YoutubeSearchResult,
+} from "./search.native";
 
 @Injectable()
 export class SearchService {
@@ -98,6 +103,15 @@ export class SearchService {
                                 title: item.shelfRenderer.title.simpleText,
                                 items,
                             });
+                        } else if ("playlistRenderer" in item) {
+                            result.push({
+                                type: "PLAYLIST",
+                                title: item.playlistRenderer.title.simpleText,
+                                display:
+                                    item.playlistRenderer.thumbnails[0]
+                                        .thumbnails,
+                                list: item.playlistRenderer.playlistId,
+                            });
                         }
                     }
 
@@ -145,33 +159,66 @@ export class SearchService {
 
                     const result: CollectionSearchEntry[] = [];
 
-                    for (const item of data.contents.tabbedSearchResultsRenderer
-                        .tabs[0].tabRenderer.content.sectionListRenderer
-                        .contents) {
-                        const items: VideoSearchEntry[] = [];
+                    const content =
+                        data.contents.tabbedSearchResultsRenderer.tabs[0]
+                            .tabRenderer.content.sectionListRenderer.contents;
+
+                    for (const item of content) {
+                        const items: CollectionSearchEntry["items"] = [];
 
                         if (!("musicShelfRenderer" in item)) continue;
 
-                        for (const vod of item.musicShelfRenderer.contents) {
-                            // here we filter everything but videos
-                            if (
-                                !vod.musicResponsiveListItemRenderer
-                                    .playlistItemData
-                            )
-                                continue;
-                            items.push({
-                                type: "VIDEO",
-                                code: vod.musicResponsiveListItemRenderer
-                                    .playlistItemData.videoId,
-                                display:
-                                    vod.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                        cutYTImageLink
-                                    ),
-                                title: vod.musicResponsiveListItemRenderer
-                                    .flexColumns[0]
-                                    .musicResponsiveListItemFlexColumnRenderer
-                                    .text.runs[0].text,
-                            });
+                        for (const entry of item.musicShelfRenderer.contents) {
+                            if (isAudioTemplate(entry)) {
+                                items.push({
+                                    type: "VIDEO",
+                                    code: entry.musicResponsiveListItemRenderer
+                                        .playlistItemData.videoId,
+                                    display:
+                                        entry.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
+                                    title: entry.musicResponsiveListItemRenderer
+                                        .flexColumns[0]
+                                        .musicResponsiveListItemFlexColumnRenderer
+                                        .text.runs[0].text,
+                                });
+                            } else if (isArtistTemplate(entry)) {
+                                items.push({
+                                    type: "CHANNEL",
+                                    description: null,
+                                    display:
+                                        entry.musicResponsiveListItemRenderer
+                                            .thumbnail.musicThumbnailRenderer
+                                            .thumbnail.thumbnails,
+                                    id: entry.musicResponsiveListItemRenderer
+                                        .navigationEndpoint.browseEndpoint
+                                        .browseId,
+                                    tag: null,
+                                    title: entry.musicResponsiveListItemRenderer
+                                        .flexColumns[0]
+                                        .musicResponsiveListItemFlexColumnRenderer
+                                        .text.runs[0].text,
+                                });
+                            } else {
+                                items.push({
+                                    type: "PLAYLIST",
+                                    display:
+                                        entry.musicResponsiveListItemRenderer
+                                            .thumbnail.musicThumbnailRenderer
+                                            .thumbnail.thumbnails,
+                                    list: entry.musicResponsiveListItemRenderer
+                                        .overlay
+                                        .musicItemThumbnailOverlayRenderer
+                                        .content.musicPlayButtonRenderer
+                                        .playNavigationEndpoint
+                                        .watchPlaylistEndpoint.playlistId,
+                                    title: entry.musicResponsiveListItemRenderer
+                                        .flexColumns[0]
+                                        .musicResponsiveListItemFlexColumnRenderer
+                                        .text.runs[0].text,
+                                });
+                            }
                         }
 
                         if (items.length === 0) continue;

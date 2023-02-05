@@ -72,6 +72,20 @@ export type ChannelRenderer = {
     };
 };
 
+export type PlaylistRenderer = {
+    playlistRenderer: {
+        playlistId: string;
+        title: {
+            simpleText: string;
+        };
+        thumbnails: [
+            {
+                thumbnails: YTImage[];
+            }
+        ];
+    };
+};
+
 export type YoutubeSearchResult = {
     contents: {
         twoColumnSearchResultsRenderer: {
@@ -85,11 +99,130 @@ export type YoutubeSearchResult = {
                                     | ChannelRenderer
                                     | ShelfRenderer
                                     | VideoRenderer
+                                    | PlaylistRenderer
                                     | { randomShit: unknown }
                                 >;
                             };
                         }
                     ];
+                };
+            };
+        };
+    };
+};
+
+export type AudioTemplate = {
+    musicResponsiveListItemRenderer: {
+        thumbnail: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        playlistItemData: {
+            videoId: string;
+        };
+        flexColumns: [
+            {
+                musicResponsiveListItemFlexColumnRenderer: {
+                    text: {
+                        runs: [
+                            {
+                                text: string;
+                            }
+                        ];
+                    };
+                };
+            }
+        ];
+    };
+};
+
+export type ArtistTemplate = {
+    musicResponsiveListItemRenderer: {
+        thumbnail: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        flexColumns: [
+            {
+                musicResponsiveListItemFlexColumnRenderer: {
+                    text: {
+                        runs: [
+                            {
+                                text: string;
+                            }
+                        ];
+                    };
+                };
+            }
+        ];
+        navigationEndpoint: {
+            browseEndpoint: {
+                /**
+                 * channel id
+                 */
+                browseId: string;
+                browseEndpointContextSupportedConfigs: {
+                    browseEndpointContextMusicConfig: {
+                        pageType: "MUSIC_PAGE_TYPE_ARTIST";
+                    };
+                };
+            };
+        };
+    };
+};
+
+export type MusicPlaylistTemplate = {
+    musicResponsiveListItemRenderer: {
+        thumbnail: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        flexColumns: [
+            {
+                musicResponsiveListItemFlexColumnRenderer: {
+                    text: {
+                        runs: [
+                            {
+                                text: string;
+                            }
+                        ];
+                    };
+                };
+            }
+        ];
+        overlay: {
+            musicItemThumbnailOverlayRenderer: {
+                content: {
+                    musicPlayButtonRenderer: {
+                        playNavigationEndpoint: {
+                            watchPlaylistEndpoint: {
+                                /**
+                                 * list
+                                 */
+                                playlistId: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        navigationEndpoint: {
+            browseEndpoint: {
+                browseEndpointContextSupportedConfigs: {
+                    browseEndpointContextMusicConfig: {
+                        pageType:
+                            | "MUSIC_PAGE_TYPE_ALBUM"
+                            | "MUSIC_PAGE_TYPE_PLAYLIST";
+                    };
                 };
             };
         };
@@ -117,33 +250,11 @@ export type MusicSearchResult = {
                                                       }
                                                   ];
                                               };
-                                              contents: Array<{
-                                                  musicResponsiveListItemRenderer: {
-                                                      thumbnail: {
-                                                          musicThumbnailRenderer: {
-                                                              thumbnail: {
-                                                                  thumbnails: YTImage[];
-                                                              };
-                                                          };
-                                                      };
-                                                      playlistItemData?: {
-                                                          videoId: string;
-                                                      };
-                                                      flexColumns: [
-                                                          {
-                                                              musicResponsiveListItemFlexColumnRenderer: {
-                                                                  text: {
-                                                                      runs: [
-                                                                          {
-                                                                              text: string;
-                                                                          }
-                                                                      ];
-                                                                  };
-                                                              };
-                                                          }
-                                                      ];
-                                                  };
-                                              }>;
+                                              contents: Array<
+                                                  | AudioTemplate
+                                                  | ArtistTemplate
+                                                  | MusicPlaylistTemplate
+                                              >;
                                           };
                                       }
                                 >;
@@ -154,4 +265,22 @@ export type MusicSearchResult = {
             ];
         };
     };
+};
+
+export const isAudioTemplate = (
+    item: AudioTemplate | ArtistTemplate | MusicPlaylistTemplate
+): item is AudioTemplate => {
+    return "playlistItemData" in item.musicResponsiveListItemRenderer;
+};
+
+export const isArtistTemplate = (
+    item: AudioTemplate | ArtistTemplate | MusicPlaylistTemplate
+): item is ArtistTemplate => {
+    return (
+        "navigationEndpoint" in item.musicResponsiveListItemRenderer &&
+        item.musicResponsiveListItemRenderer.navigationEndpoint.browseEndpoint
+            .browseEndpointContextSupportedConfigs
+            .browseEndpointContextMusicConfig.pageType ===
+            "MUSIC_PAGE_TYPE_ARTIST"
+    );
 };
