@@ -2,8 +2,8 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map } from "rxjs";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
-import { YTPlaylistWithID, YTVideo } from "src/Types";
-import { Channel, Page } from "./channel.model";
+import { Page, YTPlaylistWithID, YTVideo } from "src/Types";
+import { YoutubeChannel } from "./channel.model";
 import {
     YTChannelBasic,
     YTChannelPlaylists,
@@ -13,7 +13,7 @@ import {
 } from "./channel.native";
 
 @Injectable()
-export class ChannelService {
+export class YoutubeChannelService {
     constructor(private http: HttpService) {}
 
     getYoutubeChannelInfo(id: string) {
@@ -26,7 +26,7 @@ export class ChannelService {
             .pipe(
                 extractDataFromResponse<YTChannelBasic>(),
                 map(
-                    (data): Channel => ({
+                    (data): YoutubeChannel => ({
                         id: data.header.c4TabbedHeaderRenderer.channelId,
                         avatar: data.header.c4TabbedHeaderRenderer.avatar
                             .thumbnails,
@@ -87,12 +87,12 @@ export class ChannelService {
                     }
 
                     return {
-                        items,
                         next: nextToken
                             ? {
                                   key: nextToken,
                               }
                             : null,
+                        items,
                     };
                 })
             );
@@ -139,12 +139,12 @@ export class ChannelService {
                     }
 
                     return {
-                        items,
                         next: nextToken
                             ? {
                                   key: nextToken,
                               }
                             : null,
+                        items,
                     };
                 })
             );
@@ -195,12 +195,12 @@ export class ChannelService {
                     }
 
                     return {
-                        items,
                         next: nextToken
                             ? {
                                   key: nextToken,
                               }
                             : null,
+                        items,
                     };
                 })
             );
@@ -246,12 +246,12 @@ export class ChannelService {
                     }
 
                     return {
-                        items,
                         next: nextToken
                             ? {
                                   key: nextToken,
                               }
                             : null,
+                        items,
                     };
                 })
             );
@@ -313,12 +313,12 @@ export class ChannelService {
                     }
 
                     return {
-                        items,
                         next: nextToken
                             ? {
                                   key: nextToken,
                               }
                             : null,
+                        items,
                     };
                 })
             );
@@ -365,12 +365,12 @@ export class ChannelService {
                     }
 
                     return {
-                        items,
                         next: nextToken
                             ? {
                                   key: nextToken,
                               }
                             : null,
+                        items,
                     };
                 })
             );

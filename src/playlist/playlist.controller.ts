@@ -43,6 +43,11 @@ export class PlaylistController {
         data.pipe(res);
     }
 
+    @Get("continue/:key")
+    continuePlaylist(@Param("key") key: string) {
+        return this.playlist.continuePlaylist(key);
+    }
+
     @Get(":list")
     getPlaylist(@Param("list") list: string) {
         return this.playlist.getPlaylist(list);

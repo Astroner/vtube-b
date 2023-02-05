@@ -1,6 +1,6 @@
-import { YTImage } from "src/Types";
+import { YTImage, YTPlaylistWithID, YTVideo } from "src/Types";
 
-export type Channel = {
+export type YoutubeChannel = {
     id: string;
     title: string;
     description: string | null;
@@ -9,9 +9,21 @@ export type Channel = {
     tags: string[];
 };
 
-export type Page<T> = {
-    items: T[];
-    next: null | {
-        key: string;
-    };
+export type MusicChannelPreview = {
+    id: string;
+    title: string;
+    display: YTImage[];
+};
+
+export type MusicChannelCategory = {
+    title: string;
+    items: Array<YTVideo | MusicChannelPreview | YTPlaylistWithID>;
+};
+
+export type MusicChannel = {
+    id: string;
+    title: string;
+    description: string | null;
+    background: YTImage[];
+    categories: MusicChannelCategory[];
 };

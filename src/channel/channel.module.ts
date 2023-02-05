@@ -1,11 +1,12 @@
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { ChannelController } from "./channel.controller";
-import { ChannelService } from "./channel.service";
+import { MusicChannelService } from "./music-channel.service";
+import { YoutubeChannelService } from "./youtube-channel.service";
 
 @Module({
     controllers: [ChannelController],
-    providers: [ChannelService],
+    providers: [YoutubeChannelService, MusicChannelService],
     imports: [HttpModule],
 })
 export class ChannelModule {}
