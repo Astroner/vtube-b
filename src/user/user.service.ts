@@ -21,7 +21,7 @@ export class UserService {
         private jwt: JwtService
     ) {}
 
-    async createUser(dto: CreateUserDTO) {
+    async createUser(dto: CreateUserDTO): Promise<void> {
         const user = new this.userModel({
             username: dto.username,
             password: await hash(dto.password, saltRounds),
@@ -38,7 +38,7 @@ export class UserService {
         }
     }
 
-    async authenticate(dto: AuthDTO) {
+    async authenticate(dto: AuthDTO): Promise<string> {
         const user = await this.userModel.findOne({
             username: dto.username,
         });
@@ -49,7 +49,7 @@ export class UserService {
         return this.jwt.signAsync({ id: user.id });
     }
 
-    async verify(token: string) {
+    async verify(token: string): Promise<{ id: string } | null> {
         try {
             const data = await this.jwt.verifyAsync<{ id: string }>(token);
             return {
@@ -60,11 +60,11 @@ export class UserService {
         }
     }
 
-    async getUserById(id: string) {
+    async getUserById(id: string): Promise<UserDocument | null> {
         return await this.userModel.findById(id);
     }
 
-    async getUserToken(username: string) {
+    async getUserToken(username: string): Promise<string> {
         const user = await this.userModel.findOne({
             username,
         });

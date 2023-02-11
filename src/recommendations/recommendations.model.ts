@@ -1,28 +1,18 @@
-import { YTImage } from "src/Types";
+import { YTPlaylistWithID, YTVideo, Category } from "src/Types";
+
+export type RecommendationBase<K extends string, T> = {
+    type: K;
+    value: T;
+};
 
 export type Recommendation =
-    | VideoRecommendation
-    | DynamicPlaylistRecommendation;
+    | RecommendationBase<"VIDEO", YTVideo>
+    | RecommendationBase<
+          "DYNAMIC_PLAYLIST",
+          YTPlaylistWithID & { code: string }
+      >;
 
-export interface VideoRecommendation {
-    type: "VIDEO";
-    title: string;
-    display: YTImage[];
-    code: string;
-}
-
-export interface DynamicPlaylistRecommendation {
-    type: "DYNAMIC_PLAYLIST";
-    title: string;
-    display: YTImage[];
-    list: string;
-    code: string;
-}
-
-export interface MusicCategory {
-    title: string;
-    items: Recommendation[];
-}
+export type MusicCategory = Category<Recommendation>;
 
 export interface MusicCategories {
     categories: MusicCategory[];

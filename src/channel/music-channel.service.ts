@@ -1,7 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { map } from "rxjs";
-import { MusicChannel } from "./channel.model";
+import { map, Observable } from "rxjs";
+import { MusicChannel } from "src/Types";
 import {
     isCarouselArtist,
     isCarouselPlaylist,
@@ -12,7 +12,7 @@ import {
 export class MusicChannelService {
     constructor(private http: HttpService) {}
 
-    getInfo(id: string) {
+    getInfo(id: string): Observable<MusicChannel> {
         return this.http
             .get<string>(`https://music.youtube.com/channel/${id}/`, {
                 headers: {
@@ -96,6 +96,8 @@ export class MusicChannelService {
                                                         .thumbnailRenderer
                                                         .musicThumbnailRenderer
                                                         .thumbnail.thumbnails,
+                                                tag: null,
+                                                description: null,
                                             };
                                         } else if (isCarouselPlaylist(item)) {
                                             return {

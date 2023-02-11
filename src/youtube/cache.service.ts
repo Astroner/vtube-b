@@ -10,7 +10,7 @@ export class CacheService {
 
     private timers = new Map<string, NodeJS.Timeout>();
 
-    async set(code: string, info: VideoInfo) {
+    async set(code: string, info: VideoInfo): Promise<void> {
         this.data.set(code, info);
         this.setTimer(code);
     }
@@ -36,7 +36,7 @@ export class CacheService {
         return this.data.get(code)!;
     }
 
-    private setTimer(code: string) {
+    private setTimer(code: string): void {
         const current = this.timers.get(code);
         if (current) clearTimeout(current);
         this.timers.set(

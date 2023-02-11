@@ -1,15 +1,15 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
-import { map } from "rxjs";
-import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
+import { map, Observable } from "rxjs";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
+import { ChannelPreview } from "src/Types";
 import { Subscriptions } from "./subscriptions.native";
 
 @Injectable()
 export class SubscriptionsService {
     constructor(private http: HttpService) {}
 
-    getSubscriptions(psid: string) {
+    getSubscriptions(psid: string): Observable<ChannelPreview[]> {
         return this.http
             .get("https://www.youtube.com/feed/channels", {
                 headers: {
@@ -26,6 +26,8 @@ export class SubscriptionsService {
                                 display:
                                     item.channelRenderer.thumbnail.thumbnails,
                                 id: item.channelRenderer.channelId,
+                                description: null,
+                                tag: null,
                             };
                         }
                     );

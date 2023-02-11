@@ -12,7 +12,9 @@ import { Response } from "express";
 import { lastValueFrom } from "rxjs";
 
 import { getMidItem } from "src/helpers/functions/getMidItem";
+import { YTVideo } from "src/Types";
 import { YoutubeService } from "src/youtube/youtube.service";
+import { VideoFormat } from "./player.model";
 
 @Controller("player")
 export class PlayerController {
@@ -24,7 +26,7 @@ export class PlayerController {
         @Param("code") code: string,
         @Headers("range") range: string,
         @Query("itag") itag?: string
-    ) {
+    ): Promise<void> {
         if (!range) throw new BadRequestException("Range is not provided");
 
         const [strStart, strEnd] = range.split("=")[1].split("-");
@@ -51,12 +53,13 @@ export class PlayerController {
     }
 
     @Get("info/:code")
-    async getInfo(@Param("code") code: string) {
+    async getInfo(@Param("code") code: string): Promise<YTVideo> {
         const data = await this.youtube.getVideoInfo(code);
 
         return {
             title: data.title,
-            displayImage: data.displayImage,
+            display: data.displayImage,
+            code,
         };
     }
 
@@ -64,7 +67,7 @@ export class PlayerController {
     async getFormats(
         @Param("code") code: string,
         @Query("type") type?: string
-    ) {
+    ): Promise<VideoFormat[]> {
         const info = await this.youtube.getVideoInfo(code);
 
         return info.formats
@@ -85,7 +88,10 @@ export class PlayerController {
     }
 
     @Get("thumbnail/:code")
-    async getImage(@Param("code") code: string, @Res() res: Response) {
+    async getImage(
+        @Param("code") code: string,
+        @Res() res: Response
+    ): Promise<void> {
         const info = await this.youtube.getVideoInfo(code);
         const { data, headers } = await lastValueFrom(
             this.http.get(getMidItem(info.displayImage).url, {
@@ -98,7 +104,7 @@ export class PlayerController {
     }
 
     @Get("/test/:code")
-    page(@Param("code") code: string) {
+    page(@Param("code") code: string): string {
         return `<!DOCTYPE html>
 <html lang="en">
 <head>

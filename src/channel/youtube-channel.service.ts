@@ -1,9 +1,9 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { map } from "rxjs";
+import { map, Observable } from "rxjs";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
-import { Page, YTPlaylistWithID, YTVideo } from "src/Types";
-import { YoutubeChannel } from "./channel.model";
+import { Page, YoutubeChannel, YTPlaylistWithID, YTVideo } from "src/Types";
+
 import {
     YTChannelBasic,
     YTChannelPlaylists,
@@ -16,7 +16,7 @@ import {
 export class YoutubeChannelService {
     constructor(private http: HttpService) {}
 
-    getYoutubeChannelInfo(id: string) {
+    getYoutubeChannelInfo(id: string): Observable<YoutubeChannel> {
         return this.http
             .get<string>(`https://youtube.com/channel/${id}/`, {
                 headers: {
@@ -42,7 +42,7 @@ export class YoutubeChannelService {
                 )
             );
     }
-    getYoutubeChannelVideos(id: string) {
+    getYoutubeChannelVideos(id: string): Observable<Page<YTVideo>> {
         return this.http
             .get<string>(`https://youtube.com/channel/${id}/videos/`, {
                 headers: {
@@ -98,7 +98,7 @@ export class YoutubeChannelService {
             );
     }
 
-    continueYoutubeChannelVideos(key: string) {
+    continueYoutubeChannelVideos(key: string): Observable<Page<YTVideo>> {
         return this.http
             .post<YTChannelVideosContinuation>(
                 "https://www.youtube.com/youtubei/v1/browse",
@@ -150,7 +150,7 @@ export class YoutubeChannelService {
             );
     }
 
-    getYoutubeChannelPlaylists(id: string) {
+    getYoutubeChannelPlaylists(id: string): Observable<Page<YTPlaylistWithID>> {
         return this.http
             .get<string>(`https://youtube.com/channel/${id}/playlists/`, {
                 headers: {
@@ -206,7 +206,9 @@ export class YoutubeChannelService {
             );
     }
 
-    continueYoutubeChannelPlaylists(key: string) {
+    continueYoutubeChannelPlaylists(
+        key: string
+    ): Observable<Page<YTPlaylistWithID>> {
         return this.http
             .post<YTChannelPlaylistsContinuation>(
                 "https://www.youtube.com/youtubei/v1/browse",
@@ -257,7 +259,7 @@ export class YoutubeChannelService {
             );
     }
 
-    getYoutubeChannelStreams(id: string) {
+    getYoutubeChannelStreams(id: string): Observable<Page<YTVideo>> {
         return this.http
             .get<string>(`https://youtube.com/channel/${id}/streams/`, {
                 headers: {
@@ -324,7 +326,7 @@ export class YoutubeChannelService {
             );
     }
 
-    continueYoutubeChannelStreams(key: string) {
+    continueYoutubeChannelStreams(key: string): Observable<Page<YTVideo>> {
         return this.http
             .post<YTChannelVideosContinuation>(
                 "https://www.youtube.com/youtubei/v1/browse",

@@ -38,7 +38,7 @@ export class PlaylistService {
                 extractDataFromResponse<PlaylistData | PlaylistError>(),
                 map((json) => {
                     if ("metadata" in json) {
-                        const items: Playlist["list"]["items"] = [];
+                        const items: YTPlaylist["list"]["items"] = [];
                         let next: string | null = null;
 
                         const content =
@@ -210,7 +210,7 @@ export class PlaylistService {
             );
     }
 
-    getAll(ytID: string) {
+    getAll(ytID: string): Observable<YTPlaylistWithID[]> {
         return this.http
             .get("https://www.youtube.com/feed/library", {
                 headers: {

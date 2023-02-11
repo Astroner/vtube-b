@@ -1,33 +1,20 @@
-import { YTImage } from "src/Types";
+import { Category, ChannelPreview, YTPlaylistWithID, YTVideo } from "src/Types";
 
-export type ChannelSearchEntry = {
-    type: "CHANNEL";
-    id: string;
-    title: string;
-    description: string | null;
-    tag: string | null;
-    display: YTImage[];
+export type SearchEntryBase<K extends string, T> = {
+    type: K;
+    value: T;
 };
 
-export type VideoSearchEntry = {
-    type: "VIDEO";
-    code: string;
-    title: string;
-    display: YTImage[];
-};
+export type ChannelSearchEntry = SearchEntryBase<"CHANNEL", ChannelPreview>;
 
-export type PlaylistSearchEntry = {
-    type: "PLAYLIST";
-    title: string;
-    list: string;
-    display: YTImage[];
-};
+export type VideoSearchEntry = SearchEntryBase<"VIDEO", YTVideo>;
 
-export type CollectionSearchEntry = {
-    type: "COLLECTION";
-    title: string;
-    items: Array<ChannelSearchEntry | VideoSearchEntry | PlaylistSearchEntry>;
-};
+export type PlaylistSearchEntry = SearchEntryBase<"PLAYLIST", YTPlaylistWithID>;
+
+export type CollectionSearchEntry = SearchEntryBase<
+    "COLLECTION",
+    Category<ChannelSearchEntry | VideoSearchEntry | PlaylistSearchEntry>
+>;
 
 export type SearchEntry =
     | ChannelSearchEntry

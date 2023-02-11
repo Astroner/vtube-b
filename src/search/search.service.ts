@@ -1,6 +1,6 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { map } from "rxjs";
+import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
@@ -20,7 +20,7 @@ import {
 export class SearchService {
     constructor(private http: HttpService) {}
 
-    searchYoutube(text: string) {
+    searchYoutube(text: string): Observable<SearchEntry[]> {
         return this.http
             .get<string>("https://www.youtube.com/results", {
                 params: {
@@ -42,17 +42,20 @@ export class SearchService {
                         if ("channelRenderer" in item) {
                             result.push({
                                 type: "CHANNEL",
-                                id: item.channelRenderer.channelId,
-                                tag: item.channelRenderer.subscriberCountText
-                                    .simpleText,
-                                title: item.channelRenderer.title.simpleText,
-                                description:
-                                    item.channelRenderer.descriptionSnippet
-                                        ?.runs[0].text ?? null,
-                                display:
-                                    item.channelRenderer.thumbnail.thumbnails.map(
-                                        cutYTImageLink
-                                    ),
+                                value: {
+                                    id: item.channelRenderer.channelId,
+                                    tag: item.channelRenderer
+                                        .subscriberCountText.simpleText,
+                                    title: item.channelRenderer.title
+                                        .simpleText,
+                                    description:
+                                        item.channelRenderer.descriptionSnippet
+                                            ?.runs[0].text ?? null,
+                                    display:
+                                        item.channelRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
+                                },
                             });
                         } else if ("videoRenderer" in item) {
                             if (
@@ -66,12 +69,15 @@ export class SearchService {
                                 continue;
                             result.push({
                                 type: "VIDEO",
-                                code: item.videoRenderer.videoId,
-                                title: item.videoRenderer.title.runs[0].text,
-                                display:
-                                    item.videoRenderer.thumbnail.thumbnails.map(
-                                        cutYTImageLink
-                                    ),
+                                value: {
+                                    code: item.videoRenderer.videoId,
+                                    title: item.videoRenderer.title.runs[0]
+                                        .text,
+                                    display:
+                                        item.videoRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
+                                },
                             });
                         } else if ("shelfRenderer" in item) {
                             const items: VideoSearchEntry[] = [];
@@ -89,28 +95,36 @@ export class SearchService {
                                     continue;
                                 items.push({
                                     type: "VIDEO",
-                                    code: vod.videoRenderer.videoId,
-                                    display:
-                                        vod.videoRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
-                                        ),
-                                    title: vod.videoRenderer.title.runs[0].text,
+                                    value: {
+                                        code: vod.videoRenderer.videoId,
+                                        display:
+                                            vod.videoRenderer.thumbnail.thumbnails.map(
+                                                cutYTImageLink
+                                            ),
+                                        title: vod.videoRenderer.title.runs[0]
+                                            .text,
+                                    },
                                 });
                             }
 
                             result.push({
                                 type: "COLLECTION",
-                                title: item.shelfRenderer.title.simpleText,
-                                items,
+                                value: {
+                                    title: item.shelfRenderer.title.simpleText,
+                                    items,
+                                },
                             });
                         } else if ("playlistRenderer" in item) {
                             result.push({
                                 type: "PLAYLIST",
-                                title: item.playlistRenderer.title.simpleText,
-                                display:
-                                    item.playlistRenderer.thumbnails[0]
-                                        .thumbnails,
-                                list: item.playlistRenderer.playlistId,
+                                value: {
+                                    title: item.playlistRenderer.title
+                                        .simpleText,
+                                    display:
+                                        item.playlistRenderer.thumbnails[0]
+                                            .thumbnails,
+                                    list: item.playlistRenderer.playlistId,
+                                },
                             });
                         }
                     }
@@ -120,7 +134,7 @@ export class SearchService {
             );
     }
 
-    searchMusic(text: string) {
+    searchMusic(text: string): Observable<SearchEntry[]> {
         return this.http
             .get<string>("https://music.youtube.com/search", {
                 params: {
@@ -164,7 +178,8 @@ export class SearchService {
                             .tabRenderer.content.sectionListRenderer.contents;
 
                     for (const item of content) {
-                        const items: CollectionSearchEntry["items"] = [];
+                        const items: CollectionSearchEntry["value"]["items"] =
+                            [];
 
                         if (!("musicShelfRenderer" in item)) continue;
 
@@ -172,51 +187,67 @@ export class SearchService {
                             if (isAudioTemplate(entry)) {
                                 items.push({
                                     type: "VIDEO",
-                                    code: entry.musicResponsiveListItemRenderer
-                                        .playlistItemData.videoId,
-                                    display:
-                                        entry.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
-                                        ),
-                                    title: entry.musicResponsiveListItemRenderer
-                                        .flexColumns[0]
-                                        .musicResponsiveListItemFlexColumnRenderer
-                                        .text.runs[0].text,
+                                    value: {
+                                        code: entry
+                                            .musicResponsiveListItemRenderer
+                                            .playlistItemData.videoId,
+                                        display:
+                                            entry.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                cutYTImageLink
+                                            ),
+                                        title: entry
+                                            .musicResponsiveListItemRenderer
+                                            .flexColumns[0]
+                                            .musicResponsiveListItemFlexColumnRenderer
+                                            .text.runs[0].text,
+                                    },
                                 });
                             } else if (isArtistTemplate(entry)) {
                                 items.push({
                                     type: "CHANNEL",
-                                    description: null,
-                                    display:
-                                        entry.musicResponsiveListItemRenderer
-                                            .thumbnail.musicThumbnailRenderer
-                                            .thumbnail.thumbnails,
-                                    id: entry.musicResponsiveListItemRenderer
-                                        .navigationEndpoint.browseEndpoint
-                                        .browseId,
-                                    tag: null,
-                                    title: entry.musicResponsiveListItemRenderer
-                                        .flexColumns[0]
-                                        .musicResponsiveListItemFlexColumnRenderer
-                                        .text.runs[0].text,
+                                    value: {
+                                        description: null,
+                                        display:
+                                            entry
+                                                .musicResponsiveListItemRenderer
+                                                .thumbnail
+                                                .musicThumbnailRenderer
+                                                .thumbnail.thumbnails,
+                                        id: entry
+                                            .musicResponsiveListItemRenderer
+                                            .navigationEndpoint.browseEndpoint
+                                            .browseId,
+                                        tag: null,
+                                        title: entry
+                                            .musicResponsiveListItemRenderer
+                                            .flexColumns[0]
+                                            .musicResponsiveListItemFlexColumnRenderer
+                                            .text.runs[0].text,
+                                    },
                                 });
                             } else {
                                 items.push({
                                     type: "PLAYLIST",
-                                    display:
-                                        entry.musicResponsiveListItemRenderer
-                                            .thumbnail.musicThumbnailRenderer
-                                            .thumbnail.thumbnails,
-                                    list: entry.musicResponsiveListItemRenderer
-                                        .overlay
-                                        .musicItemThumbnailOverlayRenderer
-                                        .content.musicPlayButtonRenderer
-                                        .playNavigationEndpoint
-                                        .watchPlaylistEndpoint.playlistId,
-                                    title: entry.musicResponsiveListItemRenderer
-                                        .flexColumns[0]
-                                        .musicResponsiveListItemFlexColumnRenderer
-                                        .text.runs[0].text,
+                                    value: {
+                                        display:
+                                            entry
+                                                .musicResponsiveListItemRenderer
+                                                .thumbnail
+                                                .musicThumbnailRenderer
+                                                .thumbnail.thumbnails,
+                                        list: entry
+                                            .musicResponsiveListItemRenderer
+                                            .overlay
+                                            .musicItemThumbnailOverlayRenderer
+                                            .content.musicPlayButtonRenderer
+                                            .playNavigationEndpoint
+                                            .watchPlaylistEndpoint.playlistId,
+                                        title: entry
+                                            .musicResponsiveListItemRenderer
+                                            .flexColumns[0]
+                                            .musicResponsiveListItemFlexColumnRenderer
+                                            .text.runs[0].text,
+                                    },
                                 });
                             }
                         }
@@ -225,8 +256,11 @@ export class SearchService {
 
                         result.push({
                             type: "COLLECTION",
-                            title: item.musicShelfRenderer.title.runs[0].text,
-                            items,
+                            value: {
+                                title: item.musicShelfRenderer.title.runs[0]
+                                    .text,
+                                items,
+                            },
                         });
                     }
 
