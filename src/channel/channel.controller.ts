@@ -1,51 +1,42 @@
 import { Controller, Get, Param } from "@nestjs/common";
-import { MusicChannelService } from "./music-channel.service";
-import { YoutubeChannelService } from "./youtube-channel.service";
+import { ChannelService } from "./channel.service";
 
 @Controller("channel")
 export class ChannelController {
-    constructor(
-        private youtube: YoutubeChannelService,
-        private music: MusicChannelService
-    ) {}
+    constructor(private service: ChannelService) {}
 
-    @Get("youtube/:id")
+    @Get("youtube/info/:id")
     getYoutubeInfo(@Param("id") channel: string) {
-        return this.youtube.getYoutubeChannelInfo(channel);
+        return this.service.getYoutubeChannelInfo(channel);
     }
 
     @Get("youtube/videos/:id")
     getYoutubeVideos(@Param("id") channel: string) {
-        return this.youtube.getYoutubeChannelVideos(channel);
+        return this.service.getYoutubeChannelVideos(channel);
     }
 
     @Get("youtube/videos/continue/:key")
     continueYoutubeVideos(@Param("key") key: string) {
-        return this.youtube.continueYoutubeChannelVideos(key);
+        return this.service.continueYoutubeChannelVideos(key);
     }
 
     @Get("youtube/playlists/:id")
     getYoutubePlaylists(@Param("id") channel: string) {
-        return this.youtube.getYoutubeChannelPlaylists(channel);
+        return this.service.getYoutubeChannelPlaylists(channel);
     }
 
     @Get("youtube/playlists/continue/:key")
     continueYoutubePlaylists(@Param("key") key: string) {
-        return this.youtube.continueYoutubeChannelPlaylists(key);
+        return this.service.continueYoutubeChannelPlaylists(key);
     }
 
     @Get("youtube/streams/:id")
     getYoutubeStreams(@Param("id") channel: string) {
-        return this.youtube.getYoutubeChannelStreams(channel);
+        return this.service.getYoutubeChannelStreams(channel);
     }
 
     @Get("youtube/streams/continue/:key")
     continueYoutubeStreams(@Param("key") key: string) {
-        return this.youtube.continueYoutubeChannelStreams(key);
-    }
-
-    @Get("music/:id")
-    getMusicArtist(@Param("id") id: string) {
-        return this.music.getInfo(id);
+        return this.service.continueYoutubeChannelStreams(key);
     }
 }

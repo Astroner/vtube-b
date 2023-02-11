@@ -50,7 +50,7 @@ Obviously, Youtube wont give you all the info at once, they use tricky paginatio
 Initial data could be fetched with basic get request to specific page, channel videos for example *youtube.com/channel/ID/videos/*.
 With **extractDataFromResponse()** operator we can extract actual data, but we will get only around 30 videos.
 To get next page of videos you need to make "continuation" request with specific token.
-Basically, continuation request is just a **POST** request to *https://www.youtube.com/youtubei/v1/browse/* with specific payload:
+Basically, continuation request is just a post request to *https://www.youtube.com/youtubei/v1/browse* with specific payload:
 ```ts
 type Payload = {
    continuation: string;

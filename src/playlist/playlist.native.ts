@@ -19,33 +19,22 @@ export interface PlaylistData {
                                             contents: [
                                                 {
                                                     playlistVideoListRenderer: {
-                                                        contents: Array<
-                                                            | {
-                                                                  playlistVideoRenderer: {
-                                                                      videoId: string;
-                                                                      isPlayable: true;
-                                                                      title: {
-                                                                          runs: [
-                                                                              {
-                                                                                  text: string;
-                                                                              }
-                                                                          ];
-                                                                      };
-                                                                      thumbnail: {
-                                                                          thumbnails: YTImage[];
-                                                                      };
-                                                                  };
-                                                              }
-                                                            | {
-                                                                  continuationItemRenderer: {
-                                                                      continuationEndpoint: {
-                                                                          continuationCommand: {
-                                                                              token: string;
-                                                                          };
-                                                                      };
-                                                                  };
-                                                              }
-                                                        >;
+                                                        contents: Array<{
+                                                            playlistVideoRenderer: {
+                                                                videoId: string;
+                                                                isPlayable: true;
+                                                                title: {
+                                                                    runs: [
+                                                                        {
+                                                                            text: string;
+                                                                        }
+                                                                    ];
+                                                                };
+                                                                thumbnail: {
+                                                                    thumbnails: YTImage[];
+                                                                };
+                                                            };
+                                                        }>;
                                                     };
                                                 }
                                             ];
@@ -166,38 +155,3 @@ export interface UserLibrary {
         };
     };
 }
-
-export type PlaylistContinuation = {
-    onResponseReceivedActions: [
-        {
-            appendContinuationItemsAction: {
-                continuationItems: Array<
-                    | {
-                          playlistVideoRenderer: {
-                              videoId: string;
-                              thumbnail: {
-                                  thumbnails: YTImage[];
-                              };
-                              title: {
-                                  runs: [
-                                      {
-                                          text: string;
-                                      }
-                                  ];
-                              };
-                          };
-                      }
-                    | {
-                          continuationItemRenderer: {
-                              continuationEndpoint: {
-                                  continuationCommand: {
-                                      token: string;
-                                  };
-                              };
-                          };
-                      }
-                >;
-            };
-        }
-    ];
-};
