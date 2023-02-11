@@ -10,6 +10,12 @@ export type YTVideo = {
     display: YTImage[];
 };
 
+export type YTPlaylist = {
+    title: string;
+    display: YTImage[];
+    list: Page<YTVideo>;
+};
+
 export type YTPlaylistWithID = {
     list: string;
     title: string;
