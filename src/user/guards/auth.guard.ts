@@ -12,7 +12,7 @@ import { User } from "../user.schema";
 export class AuthGuard implements CanActivate {
     constructor(private users: UserService) {}
 
-    async canActivate(context: ExecutionContext) {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const request: IncomingMessage = context.switchToHttp().getRequest();
         if (!request.headers.authorization) throw new UnauthorizedException();
 
