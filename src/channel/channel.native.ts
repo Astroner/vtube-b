@@ -209,3 +209,220 @@ export type YTChannelPlaylistsContinuation = {
         }
     ];
 };
+
+export type CarouselArtist = {
+    musicTwoRowItemRenderer: {
+        title: {
+            runs: [
+                {
+                    text: string;
+                }
+            ];
+        };
+        thumbnailRenderer: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        navigationEndpoint: {
+            browseEndpoint: {
+                browseId: string;
+                browseEndpointContextSupportedConfigs: {
+                    browseEndpointContextMusicConfig: {
+                        pageType: "MUSIC_PAGE_TYPE_ARTIST";
+                    };
+                };
+            };
+        };
+    };
+};
+
+export type CarouselAlbum = {
+    musicTwoRowItemRenderer: {
+        title: {
+            runs: [
+                {
+                    text: string;
+                }
+            ];
+        };
+        thumbnailRenderer: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        thumbnailOverlay: {
+            musicItemThumbnailOverlayRenderer: {
+                content: {
+                    musicPlayButtonRenderer: {
+                        playNavigationEndpoint: {
+                            watchPlaylistEndpoint: {
+                                playlistId: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+
+export type CarouselPlaylist = {
+    musicTwoRowItemRenderer: {
+        title: {
+            runs: [
+                {
+                    text: string;
+                }
+            ];
+        };
+        thumbnailRenderer: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        navigationEndpoint: {
+            watchEndpoint: {
+                videoId: string;
+                playlistId: string;
+            };
+        };
+    };
+};
+
+export type MusicChannelResponse = {
+    header: {
+        musicImmersiveHeaderRenderer: {
+            title: {
+                runs: [
+                    {
+                        text: string;
+                    }
+                ];
+            };
+            description: {
+                runs: [
+                    {
+                        text: string;
+                    }
+                ];
+            };
+            thumbnail: {
+                musicThumbnailRenderer: {
+                    thumbnail: {
+                        thumbnails: YTImage[];
+                    };
+                };
+            };
+        };
+    };
+    contents: {
+        singleColumnBrowseResultsRenderer: {
+            tabs: [
+                {
+                    tabRenderer: {
+                        content: {
+                            sectionListRenderer: {
+                                contents: Array<
+                                    | { randomShitGo: unknown }
+                                    | {
+                                          musicShelfRenderer: {
+                                              title: {
+                                                  runs: [
+                                                      {
+                                                          text: string;
+                                                      }
+                                                  ];
+                                              };
+                                              contents: Array<{
+                                                  musicResponsiveListItemRenderer: {
+                                                      thumbnail: {
+                                                          musicThumbnailRenderer: {
+                                                              thumbnail: {
+                                                                  thumbnails: YTImage[];
+                                                              };
+                                                          };
+                                                      };
+                                                      playlistItemData: {
+                                                          videoId: string;
+                                                      };
+                                                      flexColumns: [
+                                                          {
+                                                              musicResponsiveListItemFlexColumnRenderer: {
+                                                                  text: {
+                                                                      runs: [
+                                                                          {
+                                                                              text: string;
+                                                                          }
+                                                                      ];
+                                                                  };
+                                                              };
+                                                          }
+                                                      ];
+                                                  };
+                                              }>;
+                                          };
+                                      }
+                                    | {
+                                          musicCarouselShelfRenderer: {
+                                              header: {
+                                                  musicCarouselShelfBasicHeaderRenderer: {
+                                                      title: {
+                                                          runs: [
+                                                              {
+                                                                  text: string;
+                                                              }
+                                                          ];
+                                                      };
+                                                  };
+                                              };
+                                              contents: Array<
+                                                  | CarouselArtist
+                                                  | CarouselPlaylist
+                                                  | CarouselAlbum
+                                              >;
+                                          };
+                                      }
+                                >;
+                            };
+                        };
+                    };
+                }
+            ];
+        };
+    };
+};
+
+export const isCarouselArtist = (
+    item: CarouselArtist | CarouselPlaylist | CarouselAlbum
+): item is CarouselArtist => {
+    return (
+        "navigationEndpoint" in item.musicTwoRowItemRenderer &&
+        "browseEndpoint" in item.musicTwoRowItemRenderer.navigationEndpoint &&
+        item.musicTwoRowItemRenderer.navigationEndpoint.browseEndpoint
+            .browseEndpointContextSupportedConfigs
+            .browseEndpointContextMusicConfig.pageType ===
+            "MUSIC_PAGE_TYPE_ARTIST"
+    );
+};
+
+export const isCarouselAlbum = (
+    item: CarouselArtist | CarouselPlaylist | CarouselAlbum
+): item is CarouselAlbum => {
+    return "thumbnailOverlay" in item.musicTwoRowItemRenderer;
+};
+
+export const isCarouselPlaylist = (
+    item: CarouselArtist | CarouselPlaylist | CarouselAlbum
+): item is CarouselPlaylist => {
+    return (
+        "navigationEndpoint" in item.musicTwoRowItemRenderer &&
+        "watchEndpoint" in item.musicTwoRowItemRenderer.navigationEndpoint
+    );
+};

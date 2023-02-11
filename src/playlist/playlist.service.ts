@@ -7,10 +7,11 @@ import {
 import { map, Observable } from "rxjs";
 import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
-import { YTImage, YTVideo } from "src/Types";
-import { Playlist, PlaylistWithID } from "./playlist.model";
+import { Page, YTImage, YTPlaylistWithID, YTVideo } from "src/Types";
+import { Playlist } from "./playlist.model";
 import {
     DynamicPlaylist,
+    PlaylistContinuation,
     PlaylistData,
     PlaylistError,
     UserLibrary,
@@ -23,34 +24,111 @@ export class PlaylistService {
         return this.http
             .get<string>("https://youtube.com/playlist", {
                 params: { list },
+                headers: {
+                    cookie: "PREF=hl=en",
+                },
             })
             .pipe(
                 extractDataFromResponse<PlaylistData | PlaylistError>(),
                 map((json) => {
                     if ("metadata" in json) {
+                        const items: Playlist["list"]["items"] = [];
+                        let next: string | null = null;
+
+                        const content =
+                            json.contents.twoColumnBrowseResultsRenderer.tabs[0]
+                                .tabRenderer.content.sectionListRenderer
+                                .contents[0].itemSectionRenderer.contents[0]
+                                .playlistVideoListRenderer.contents;
+
+                        for (const item of content) {
+                            if ("playlistVideoRenderer" in item) {
+                                items.push({
+                                    title: item.playlistVideoRenderer.title
+                                        .runs[0].text,
+                                    code: item.playlistVideoRenderer.videoId,
+                                    display:
+                                        item.playlistVideoRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
+                                });
+                            } else {
+                                next =
+                                    item.continuationItemRenderer
+                                        .continuationEndpoint
+                                        .continuationCommand.token;
+                            }
+                        }
+
                         return {
                             title: json.metadata.playlistMetadataRenderer.title,
                             display:
                                 json.microformat.microformatDataRenderer.thumbnail.thumbnails.map(
                                     cutYTImageLink
                                 ),
-                            list: json.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].playlistVideoListRenderer.contents.map(
-                                (item) => {
-                                    const info = item.playlistVideoRenderer;
-
-                                    return {
-                                        title: info.title.runs[0].text,
-                                        code: info.videoId,
-                                        display:
-                                            info.thumbnail.thumbnails.map(
-                                                cutYTImageLink
-                                            ),
-                                    };
-                                }
-                            ),
+                            list: {
+                                next: !next
+                                    ? null
+                                    : {
+                                          key: next,
+                                      },
+                                items,
+                            },
                         };
                     }
                     throw new NotFoundException();
+                })
+            );
+    }
+
+    continuePlaylist(continuation: string): Observable<Page<YTVideo>> {
+        return this.http
+            .post<PlaylistContinuation>(
+                "https://www.youtube.com/youtubei/v1/browse/",
+                {
+                    continuation,
+                    context: {
+                        client: {
+                            hl: "en",
+                            clientName: "WEB",
+                            clientVersion: "2.20230120.00.00",
+                        },
+                    },
+                }
+            )
+            .pipe(
+                map((res) => res.data),
+                map((data) => {
+                    const items: YTVideo[] = [];
+                    let next: string | null = null;
+
+                    for (const item of data.onResponseReceivedActions[0]
+                        .appendContinuationItemsAction.continuationItems) {
+                        if ("playlistVideoRenderer" in item) {
+                            items.push({
+                                title: item.playlistVideoRenderer.title.runs[0]
+                                    .text,
+                                code: item.playlistVideoRenderer.videoId,
+                                display:
+                                    item.playlistVideoRenderer.thumbnail
+                                        .thumbnails,
+                            });
+                        } else {
+                            next =
+                                item.continuationItemRenderer
+                                    .continuationEndpoint.continuationCommand
+                                    .token;
+                        }
+                    }
+
+                    return {
+                        next: !next
+                            ? null
+                            : {
+                                  key: next,
+                              },
+                        items,
+                    };
                 })
             );
     }
@@ -117,7 +195,10 @@ export class PlaylistService {
                     return {
                         title: playlist.title,
                         display,
-                        list,
+                        list: {
+                            next: null,
+                            items: list,
+                        },
                     };
                 })
             );
@@ -137,7 +218,7 @@ export class PlaylistService {
                         .tabRenderer.content.sectionListRenderer.contents;
                 }),
                 map((items) => {
-                    const userPlaylists: PlaylistWithID[] = [];
+                    const userPlaylists: YTPlaylistWithID[] = [];
 
                     for (const item of items) {
                         if (!item.itemSectionRenderer.targetId) continue;
