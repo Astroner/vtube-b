@@ -15,3 +15,10 @@ export type YTPlaylistWithID = {
     title: string;
     display: YTImage[];
 };
+
+export type Page<T> = {
+    items: T[];
+    next: null | {
+        key: string;
+    };
+};

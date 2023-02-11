@@ -19,22 +19,33 @@ export interface PlaylistData {
                                             contents: [
                                                 {
                                                     playlistVideoListRenderer: {
-                                                        contents: Array<{
-                                                            playlistVideoRenderer: {
-                                                                videoId: string;
-                                                                isPlayable: true;
-                                                                title: {
-                                                                    runs: [
-                                                                        {
-                                                                            text: string;
-                                                                        }
-                                                                    ];
-                                                                };
-                                                                thumbnail: {
-                                                                    thumbnails: YTImage[];
-                                                                };
-                                                            };
-                                                        }>;
+                                                        contents: Array<
+                                                            | {
+                                                                  playlistVideoRenderer: {
+                                                                      videoId: string;
+                                                                      isPlayable: true;
+                                                                      title: {
+                                                                          runs: [
+                                                                              {
+                                                                                  text: string;
+                                                                              }
+                                                                          ];
+                                                                      };
+                                                                      thumbnail: {
+                                                                          thumbnails: YTImage[];
+                                                                      };
+                                                                  };
+                                                              }
+                                                            | {
+                                                                  continuationItemRenderer: {
+                                                                      continuationEndpoint: {
+                                                                          continuationCommand: {
+                                                                              token: string;
+                                                                          };
+                                                                      };
+                                                                  };
+                                                              }
+                                                        >;
                                                     };
                                                 }
                                             ];
@@ -155,3 +166,38 @@ export interface UserLibrary {
         };
     };
 }
+
+export type PlaylistContinuation = {
+    onResponseReceivedActions: [
+        {
+            appendContinuationItemsAction: {
+                continuationItems: Array<
+                    | {
+                          playlistVideoRenderer: {
+                              videoId: string;
+                              thumbnail: {
+                                  thumbnails: YTImage[];
+                              };
+                              title: {
+                                  runs: [
+                                      {
+                                          text: string;
+                                      }
+                                  ];
+                              };
+                          };
+                      }
+                    | {
+                          continuationItemRenderer: {
+                              continuationEndpoint: {
+                                  continuationCommand: {
+                                      token: string;
+                                  };
+                              };
+                          };
+                      }
+                >;
+            };
+        }
+    ];
+};
