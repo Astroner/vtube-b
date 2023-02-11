@@ -35,25 +35,33 @@ export class RecommendationsService {
                         if ("videoRenderer" in content) {
                             return {
                                 type: "VIDEO",
-                                title: content.videoRenderer.title.runs[0].text,
-                                display:
-                                    content.videoRenderer.thumbnail.thumbnails.map(
-                                        cutYTImageLink
-                                    ),
-                                code: content.videoRenderer.videoId,
+                                value: {
+                                    title: content.videoRenderer.title.runs[0]
+                                        .text,
+                                    display:
+                                        content.videoRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
+                                    code: content.videoRenderer.videoId,
+                                },
                             };
                         } else if ("radioRenderer" in content) {
                             return {
                                 type: "DYNAMIC_PLAYLIST",
-                                title: content.radioRenderer.title.simpleText,
-                                display:
-                                    content.radioRenderer.thumbnail.thumbnails.map(
-                                        cutYTImageLink
-                                    ),
-                                list: content.radioRenderer.navigationEndpoint
-                                    .watchEndpoint.playlistId,
-                                code: content.radioRenderer.navigationEndpoint
-                                    .watchEndpoint.videoId,
+                                value: {
+                                    title: content.radioRenderer.title
+                                        .simpleText,
+                                    display:
+                                        content.radioRenderer.thumbnail.thumbnails.map(
+                                            cutYTImageLink
+                                        ),
+                                    list: content.radioRenderer
+                                        .navigationEndpoint.watchEndpoint
+                                        .playlistId,
+                                    code: content.radioRenderer
+                                        .navigationEndpoint.watchEndpoint
+                                        .videoId,
+                                },
                             };
                         } else {
                             throw new InternalServerErrorException(
@@ -138,17 +146,21 @@ export class RecommendationsService {
                                             if (list) {
                                                 items.push({
                                                     type: "DYNAMIC_PLAYLIST",
-                                                    code,
-                                                    list,
-                                                    display,
-                                                    title,
+                                                    value: {
+                                                        code,
+                                                        list,
+                                                        display,
+                                                        title,
+                                                    },
                                                 });
                                             } else {
                                                 items.push({
                                                     type: "VIDEO",
-                                                    code,
-                                                    display,
-                                                    title,
+                                                    value: {
+                                                        code,
+                                                        display,
+                                                        title,
+                                                    },
                                                 });
                                             }
                                         } else if (
@@ -157,31 +169,34 @@ export class RecommendationsService {
                                         ) {
                                             items.push({
                                                 type: "DYNAMIC_PLAYLIST",
-                                                title: item
-                                                    .musicResponsiveListItemRenderer
-                                                    .flexColumns[0]
-                                                    .musicResponsiveListItemFlexColumnRenderer
-                                                    .text.runs[0].text,
-                                                display:
-                                                    item.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                                        cutYTImageLink
-                                                    ),
-                                                list: item
-                                                    .musicResponsiveListItemRenderer
-                                                    .overlay
-                                                    .musicItemThumbnailOverlayRenderer
-                                                    .content
-                                                    .musicPlayButtonRenderer
-                                                    .playNavigationEndpoint
-                                                    .watchEndpoint.playlistId,
-                                                code: item
-                                                    .musicResponsiveListItemRenderer
-                                                    .overlay
-                                                    .musicItemThumbnailOverlayRenderer
-                                                    .content
-                                                    .musicPlayButtonRenderer
-                                                    .playNavigationEndpoint
-                                                    .watchEndpoint.videoId,
+                                                value: {
+                                                    title: item
+                                                        .musicResponsiveListItemRenderer
+                                                        .flexColumns[0]
+                                                        .musicResponsiveListItemFlexColumnRenderer
+                                                        .text.runs[0].text,
+                                                    display:
+                                                        item.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                            cutYTImageLink
+                                                        ),
+                                                    list: item
+                                                        .musicResponsiveListItemRenderer
+                                                        .overlay
+                                                        .musicItemThumbnailOverlayRenderer
+                                                        .content
+                                                        .musicPlayButtonRenderer
+                                                        .playNavigationEndpoint
+                                                        .watchEndpoint
+                                                        .playlistId,
+                                                    code: item
+                                                        .musicResponsiveListItemRenderer
+                                                        .overlay
+                                                        .musicItemThumbnailOverlayRenderer
+                                                        .content
+                                                        .musicPlayButtonRenderer
+                                                        .playNavigationEndpoint
+                                                        .watchEndpoint.videoId,
+                                                },
                                             });
                                         } else {
                                             throw new InternalServerErrorException(
