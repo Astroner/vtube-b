@@ -12,6 +12,7 @@ import {
 import {
     isArtistTemplate,
     isAudioTemplate,
+    isDynamicPlaylistTemplate,
     MusicSearchResult,
     YoutubeSearchResult,
 } from "./search.native";
@@ -134,7 +135,7 @@ export class SearchService {
             );
     }
 
-    searchMusic(text: string): Observable<SearchEntry[]> {
+    searchMusic(text: string): any {
         return this.http
             .get<string>("https://music.youtube.com/search", {
                 params: {
@@ -225,9 +226,9 @@ export class SearchService {
                                             .text.runs[0].text,
                                     },
                                 });
-                            } else {
+                            } else if (isDynamicPlaylistTemplate(entry)) {
                                 items.push({
-                                    type: "PLAYLIST",
+                                    type: "DYNAMIC_PLAYLIST",
                                     value: {
                                         display:
                                             entry
@@ -235,18 +236,19 @@ export class SearchService {
                                                 .thumbnail
                                                 .musicThumbnailRenderer
                                                 .thumbnail.thumbnails,
-                                        list: entry
-                                            .musicResponsiveListItemRenderer
-                                            .overlay
-                                            .musicItemThumbnailOverlayRenderer
-                                            .content.musicPlayButtonRenderer
-                                            .playNavigationEndpoint
-                                            .watchPlaylistEndpoint.playlistId,
                                         title: entry
                                             .musicResponsiveListItemRenderer
                                             .flexColumns[0]
                                             .musicResponsiveListItemFlexColumnRenderer
                                             .text.runs[0].text,
+                                        code: entry
+                                            .musicResponsiveListItemRenderer
+                                            .navigationEndpoint.watchEndpoint
+                                            .videoId,
+                                        list: entry
+                                            .musicResponsiveListItemRenderer
+                                            .navigationEndpoint.watchEndpoint
+                                            .playlistId,
                                     },
                                 });
                             }

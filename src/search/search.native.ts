@@ -229,6 +229,37 @@ export type MusicPlaylistTemplate = {
     };
 };
 
+export type MusicDynamicPlaylistTemplate = {
+    musicResponsiveListItemRenderer: {
+        thumbnail: {
+            musicThumbnailRenderer: {
+                thumbnail: {
+                    thumbnails: YTImage[];
+                };
+            };
+        };
+        flexColumns: [
+            {
+                musicResponsiveListItemFlexColumnRenderer: {
+                    text: {
+                        runs: [
+                            {
+                                text: string;
+                            }
+                        ];
+                    };
+                };
+            }
+        ];
+        navigationEndpoint: {
+            watchEndpoint: {
+                videoId: string;
+                playlistId: string;
+            };
+        };
+    };
+};
+
 export type MusicSearchResult = {
     contents: {
         tabbedSearchResultsRenderer: {
@@ -254,6 +285,7 @@ export type MusicSearchResult = {
                                                   | AudioTemplate
                                                   | ArtistTemplate
                                                   | MusicPlaylistTemplate
+                                                  | MusicDynamicPlaylistTemplate
                                               >;
                                           };
                                       }
@@ -268,16 +300,40 @@ export type MusicSearchResult = {
 };
 
 export const isAudioTemplate = (
-    item: AudioTemplate | ArtistTemplate | MusicPlaylistTemplate
+    item:
+        | AudioTemplate
+        | ArtistTemplate
+        | MusicPlaylistTemplate
+        | MusicDynamicPlaylistTemplate
 ): item is AudioTemplate => {
     return "playlistItemData" in item.musicResponsiveListItemRenderer;
 };
 
+export const isDynamicPlaylistTemplate = (
+    item:
+        | AudioTemplate
+        | ArtistTemplate
+        | MusicPlaylistTemplate
+        | MusicDynamicPlaylistTemplate
+): item is MusicDynamicPlaylistTemplate => {
+    return (
+        "navigationEndpoint" in item.musicResponsiveListItemRenderer &&
+        "watchEndpoint" in
+            item.musicResponsiveListItemRenderer.navigationEndpoint
+    );
+};
+
 export const isArtistTemplate = (
-    item: AudioTemplate | ArtistTemplate | MusicPlaylistTemplate
+    item:
+        | AudioTemplate
+        | ArtistTemplate
+        | MusicPlaylistTemplate
+        | MusicDynamicPlaylistTemplate
 ): item is ArtistTemplate => {
     return (
         "navigationEndpoint" in item.musicResponsiveListItemRenderer &&
+        "browseEndpoint" in
+            item.musicResponsiveListItemRenderer.navigationEndpoint &&
         item.musicResponsiveListItemRenderer.navigationEndpoint.browseEndpoint
             .browseEndpointContextSupportedConfigs
             .browseEndpointContextMusicConfig.pageType ===

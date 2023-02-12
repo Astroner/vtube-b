@@ -11,13 +11,24 @@ export type VideoSearchEntry = SearchEntryBase<"VIDEO", YTVideo>;
 
 export type PlaylistSearchEntry = SearchEntryBase<"PLAYLIST", YTPlaylistWithID>;
 
+export type DynamicPlaylistSearchEntry = SearchEntryBase<
+    "DYNAMIC_PLAYLIST",
+    YTPlaylistWithID & { code: string }
+>;
+
 export type CollectionSearchEntry = SearchEntryBase<
     "COLLECTION",
-    Category<ChannelSearchEntry | VideoSearchEntry | PlaylistSearchEntry>
+    Category<
+        | ChannelSearchEntry
+        | VideoSearchEntry
+        | PlaylistSearchEntry
+        | DynamicPlaylistSearchEntry
+    >
 >;
 
 export type SearchEntry =
     | ChannelSearchEntry
     | VideoSearchEntry
     | CollectionSearchEntry
-    | PlaylistSearchEntry;
+    | PlaylistSearchEntry
+    | DynamicPlaylistSearchEntry;
