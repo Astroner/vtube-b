@@ -149,7 +149,7 @@ export class MusicChannelService {
                         categories,
                         description:
                             data.header.musicImmersiveHeaderRenderer.description
-                                .runs[0].text,
+                                ?.runs[0].text ?? null,
                         title: data.header.musicImmersiveHeaderRenderer.title
                             .runs[0].text,
                     };

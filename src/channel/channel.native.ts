@@ -306,7 +306,7 @@ export type MusicChannelResponse = {
                     }
                 ];
             };
-            description: {
+            description?: {
                 runs: [
                     {
                         text: string;
