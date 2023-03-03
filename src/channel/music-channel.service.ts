@@ -1,6 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
+import { ImageService } from "src/image/image.service";
 import { MusicChannel } from "src/Types";
 import {
     isCarouselArtist,
@@ -10,7 +11,7 @@ import {
 
 @Injectable()
 export class MusicChannelService {
-    constructor(private http: HttpService) {}
+    constructor(private http: HttpService, private image: ImageService) {}
 
     getInfo(id: string): Observable<MusicChannel> {
         return this.http
@@ -68,10 +69,9 @@ export class MusicChannelService {
                                             .musicResponsiveListItemFlexColumnRenderer
                                             .text.runs[0].text,
                                         display:
-                                            item.musicResponsiveListItemRenderer
-                                                .thumbnail
-                                                .musicThumbnailRenderer
-                                                .thumbnail.thumbnails,
+                                            item.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                this.image.wrapYTImage
+                                            ),
                                     })
                                 ),
                             });
@@ -92,10 +92,9 @@ export class MusicChannelService {
                                                     .musicTwoRowItemRenderer
                                                     .title.runs[0].text,
                                                 display:
-                                                    item.musicTwoRowItemRenderer
-                                                        .thumbnailRenderer
-                                                        .musicThumbnailRenderer
-                                                        .thumbnail.thumbnails,
+                                                    item.musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                        this.image.wrapYTImage
+                                                    ),
                                                 tag: null,
                                                 description: null,
                                             };
@@ -109,10 +108,9 @@ export class MusicChannelService {
                                                     .musicTwoRowItemRenderer
                                                     .title.runs[0].text,
                                                 display:
-                                                    item.musicTwoRowItemRenderer
-                                                        .thumbnailRenderer
-                                                        .musicThumbnailRenderer
-                                                        .thumbnail.thumbnails,
+                                                    item.musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                        this.image.wrapYTImage
+                                                    ),
                                             };
                                         } else {
                                             return {
@@ -129,10 +127,9 @@ export class MusicChannelService {
                                                     .musicTwoRowItemRenderer
                                                     .title.runs[0].text,
                                                 display:
-                                                    item.musicTwoRowItemRenderer
-                                                        .thumbnailRenderer
-                                                        .musicThumbnailRenderer
-                                                        .thumbnail.thumbnails,
+                                                    item.musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                        this.image.wrapYTImage
+                                                    ),
                                             };
                                         }
                                     }
@@ -144,8 +141,9 @@ export class MusicChannelService {
                     return {
                         id,
                         background:
-                            data.header.musicImmersiveHeaderRenderer.thumbnail
-                                .musicThumbnailRenderer.thumbnail.thumbnails,
+                            data.header.musicImmersiveHeaderRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                this.image.wrapYTImage
+                            ),
                         categories,
                         description:
                             data.header.musicImmersiveHeaderRenderer.description

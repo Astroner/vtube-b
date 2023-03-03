@@ -2,6 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
+import { ImageService } from "src/image/image.service";
 import { Page, YoutubeChannel, YTPlaylistWithID, YTVideo } from "src/Types";
 
 import {
@@ -14,7 +15,7 @@ import {
 
 @Injectable()
 export class YoutubeChannelService {
-    constructor(private http: HttpService) {}
+    constructor(private http: HttpService, private image: ImageService) {}
 
     getYoutubeChannelInfo(id: string): Observable<YoutubeChannel> {
         return this.http
@@ -28,11 +29,13 @@ export class YoutubeChannelService {
                 map(
                     (data): YoutubeChannel => ({
                         id: data.header.c4TabbedHeaderRenderer.channelId,
-                        avatar: data.header.c4TabbedHeaderRenderer.avatar
-                            .thumbnails,
+                        avatar: data.header.c4TabbedHeaderRenderer.avatar.thumbnails.map(
+                            this.image.wrapYTImage
+                        ),
                         background:
-                            data.header.c4TabbedHeaderRenderer.banner
-                                .thumbnails,
+                            data.header.c4TabbedHeaderRenderer.banner.thumbnails.map(
+                                this.image.wrapYTImage
+                            ),
                         title: data.header.c4TabbedHeaderRenderer.title,
                         description:
                             data.metadata.channelMetadataRenderer.description ??
@@ -130,8 +133,9 @@ export class YoutubeChannelService {
                                 code: item.richItemRenderer.content
                                     .videoRenderer.videoId,
                                 display:
-                                    item.richItemRenderer.content.videoRenderer
-                                        .thumbnail.thumbnails,
+                                    item.richItemRenderer.content.videoRenderer.thumbnail.thumbnails.map(
+                                        this.image.wrapYTImage
+                                    ),
                                 title: item.richItemRenderer.content
                                     .videoRenderer.title.runs[0].text,
                             });
@@ -187,8 +191,9 @@ export class YoutubeChannelService {
                                 title: item.gridPlaylistRenderer.title.runs[0]
                                     .text,
                                 display:
-                                    item.gridPlaylistRenderer.thumbnail
-                                        .thumbnails,
+                                    item.gridPlaylistRenderer.thumbnail.thumbnails.map(
+                                        this.image.wrapYTImage
+                                    ),
                                 list: item.gridPlaylistRenderer.playlistId,
                             });
                         }
@@ -240,8 +245,9 @@ export class YoutubeChannelService {
                                 title: item.gridPlaylistRenderer.title.runs[0]
                                     .text,
                                 display:
-                                    item.gridPlaylistRenderer.thumbnail
-                                        .thumbnails,
+                                    item.gridPlaylistRenderer.thumbnail.thumbnails.map(
+                                        this.image.wrapYTImage
+                                    ),
                                 list: item.gridPlaylistRenderer.playlistId,
                             });
                         }
@@ -306,8 +312,9 @@ export class YoutubeChannelService {
                                 code: item.richItemRenderer.content
                                     .videoRenderer.videoId,
                                 display:
-                                    item.richItemRenderer.content.videoRenderer
-                                        .thumbnail.thumbnails,
+                                    item.richItemRenderer.content.videoRenderer.thumbnail.thumbnails.map(
+                                        this.image.wrapYTImage
+                                    ),
                                 title: item.richItemRenderer.content
                                     .videoRenderer.title.runs[0].text,
                             });
@@ -358,8 +365,9 @@ export class YoutubeChannelService {
                                 code: item.richItemRenderer.content
                                     .videoRenderer.videoId,
                                 display:
-                                    item.richItemRenderer.content.videoRenderer
-                                        .thumbnail.thumbnails,
+                                    item.richItemRenderer.content.videoRenderer.thumbnail.thumbnails.map(
+                                        this.image.wrapYTImage
+                                    ),
                                 title: item.richItemRenderer.content
                                     .videoRenderer.title.runs[0].text,
                             });
