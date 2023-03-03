@@ -122,8 +122,9 @@ export class SearchService {
                                     title: item.playlistRenderer.title
                                         .simpleText,
                                     display:
-                                        item.playlistRenderer.thumbnails[0]
-                                            .thumbnails,
+                                        item.playlistRenderer.thumbnails[0].thumbnails.map(
+                                            this.image.wrapYTImage
+                                        ),
                                     list: item.playlistRenderer.playlistId,
                                 },
                             });
@@ -209,11 +210,9 @@ export class SearchService {
                                     value: {
                                         description: null,
                                         display:
-                                            entry
-                                                .musicResponsiveListItemRenderer
-                                                .thumbnail
-                                                .musicThumbnailRenderer
-                                                .thumbnail.thumbnails,
+                                            entry.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                this.image.wrapYTImage
+                                            ),
                                         id: entry
                                             .musicResponsiveListItemRenderer
                                             .navigationEndpoint.browseEndpoint
@@ -231,11 +230,9 @@ export class SearchService {
                                     type: "DYNAMIC_PLAYLIST",
                                     value: {
                                         display:
-                                            entry
-                                                .musicResponsiveListItemRenderer
-                                                .thumbnail
-                                                .musicThumbnailRenderer
-                                                .thumbnail.thumbnails,
+                                            entry.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
+                                                this.image.wrapYTImage
+                                            ),
                                         title: entry
                                             .musicResponsiveListItemRenderer
                                             .flexColumns[0]
