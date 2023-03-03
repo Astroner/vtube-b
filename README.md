@@ -23,8 +23,10 @@
 # Envs
  - PORT
  - MONGO_URL - mongoDB connection url
+ - PUBLIC_ADDRESS
  - JWT_SECRET
  - JWT_EXPIRES_IN
+ - IMAGE_HOST_WHITELIST - list of allowed image domains for 'image' module divided with spaces("domain.a domain.b domain.c") 
 
 # Useful Decorators
  - @Protected() - route decorator. Ensures that user is logged in.

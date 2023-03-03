@@ -1,9 +1,9 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
-import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
+import { ImageService } from "src/image/image.service";
 import {
     CollectionSearchEntry,
     SearchEntry,
@@ -19,7 +19,7 @@ import {
 
 @Injectable()
 export class SearchService {
-    constructor(private http: HttpService) {}
+    constructor(private http: HttpService, private image: ImageService) {}
 
     searchYoutube(text: string): Observable<SearchEntry[]> {
         return this.http
@@ -54,7 +54,7 @@ export class SearchService {
                                             ?.runs[0].text ?? null,
                                     display:
                                         item.channelRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
+                                            this.image.wrapYTImage
                                         ),
                                 },
                             });
@@ -76,7 +76,7 @@ export class SearchService {
                                         .text,
                                     display:
                                         item.videoRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
+                                            this.image.wrapYTImage
                                         ),
                                 },
                             });
@@ -100,7 +100,7 @@ export class SearchService {
                                         code: vod.videoRenderer.videoId,
                                         display:
                                             vod.videoRenderer.thumbnail.thumbnails.map(
-                                                cutYTImageLink
+                                                this.image.wrapYTImage
                                             ),
                                         title: vod.videoRenderer.title.runs[0]
                                             .text,
@@ -194,7 +194,7 @@ export class SearchService {
                                             .playlistItemData.videoId,
                                         display:
                                             entry.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                                cutYTImageLink
+                                                this.image.wrapYTImage
                                             ),
                                         title: entry
                                             .musicResponsiveListItemRenderer

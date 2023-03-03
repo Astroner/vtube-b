@@ -5,8 +5,8 @@ import {
     NotFoundException,
 } from "@nestjs/common";
 import { map, Observable } from "rxjs";
-import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
+import { ImageService } from "src/image/image.service";
 import {
     Page,
     YTImage,
@@ -25,7 +25,7 @@ import {
 
 @Injectable()
 export class PlaylistService {
-    constructor(private http: HttpService) {}
+    constructor(private http: HttpService, private image: ImageService) {}
     getPlaylist(list: string): Observable<YTPlaylist> {
         return this.http
             .get<string>("https://youtube.com/playlist", {
@@ -55,7 +55,7 @@ export class PlaylistService {
                                     code: item.playlistVideoRenderer.videoId,
                                     display:
                                         item.playlistVideoRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
+                                            this.image.wrapYTImage
                                         ),
                                 });
                             } else {
@@ -70,7 +70,7 @@ export class PlaylistService {
                             title: json.metadata.playlistMetadataRenderer.title,
                             display:
                                 json.microformat.microformatDataRenderer.thumbnail.thumbnails.map(
-                                    cutYTImageLink
+                                    this.image.wrapYTImage
                                 ),
                             list: {
                                 next: !next
@@ -182,7 +182,7 @@ export class PlaylistService {
                         if (display.length === 0) {
                             display =
                                 item.playlistPanelVideoRenderer.thumbnail.thumbnails.map(
-                                    cutYTImageLink
+                                    this.image.wrapYTImage
                                 );
                         }
 
@@ -193,7 +193,7 @@ export class PlaylistService {
                                 .navigationEndpoint.watchEndpoint.videoId,
                             display:
                                 item.playlistPanelVideoRenderer.thumbnail.thumbnails.map(
-                                    cutYTImageLink
+                                    this.image.wrapYTImage
                                 ),
                         });
                     }

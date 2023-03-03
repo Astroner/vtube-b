@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ChannelModule } from "src/channel/channel.module";
 import { env } from "src/env";
+import { ImageModule } from "src/image/image.module";
 import { PlayerModule } from "src/player/player.module";
 import { PlaylistModule } from "src/playlist/playlist.module";
 import { RecommendationsModule } from "src/recommendations/recommendations.module";
@@ -19,6 +20,7 @@ import { UserModule } from "src/user/user.module";
         UserModule,
         SearchModule,
         ChannelModule,
+        ImageModule,
     ],
 })
 export class AppModule {}

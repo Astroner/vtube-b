@@ -7,16 +7,20 @@ import {
 } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 
-import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { CacheService } from "./cache.service";
 import { VideoInfo, VideoStream } from "./youtube.model";
 import { BasicSource, YTSource } from "./youtube.responses";
+import { ImageService } from "src/image/image.service";
 
 @Injectable()
 export class YoutubeService {
     static CHUNK_SIZE = 10 ** 6;
 
-    constructor(private cache: CacheService, private http: HttpService) {}
+    constructor(
+        private cache: CacheService,
+        private http: HttpService,
+        private image: ImageService
+    ) {}
 
     async getVideoInfo(code: string): Promise<VideoInfo> {
         return await this.cache.getOr(code, () => this.fetchInfo(code));
@@ -145,7 +149,9 @@ export class YoutubeService {
 
             return {
                 formats: filteredFormats,
-                displayImage: info.videoDetails.thumbnails.map(cutYTImageLink),
+                displayImage: info.videoDetails.thumbnails.map(
+                    this.image.wrapYTImage
+                ),
                 title: info.videoDetails.title,
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 standard: filteredFormats.find((item) => item.itag === 18)!,

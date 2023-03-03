@@ -2,8 +2,8 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { map, Observable } from "rxjs";
 
-import { cutYTImageLink } from "src/helpers/functions/cutYTImageLink";
 import { extractDataFromResponse } from "src/helpers/functions/extractDataFromResponse";
+import { ImageService } from "src/image/image.service";
 import { MusicCategories, Recommendation } from "./recommendations.model";
 import {
     MusicRecommendations,
@@ -12,7 +12,7 @@ import {
 
 @Injectable()
 export class RecommendationsService {
-    constructor(private http: HttpService) {}
+    constructor(private http: HttpService, private image: ImageService) {}
 
     getYoutubeRecommendations(psid: string): Observable<Recommendation[]> {
         return this.http
@@ -40,7 +40,7 @@ export class RecommendationsService {
                                         .text,
                                     display:
                                         content.videoRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
+                                            this.image.wrapYTImage
                                         ),
                                     code: content.videoRenderer.videoId,
                                 },
@@ -53,7 +53,7 @@ export class RecommendationsService {
                                         .simpleText,
                                     display:
                                         content.radioRenderer.thumbnail.thumbnails.map(
-                                            cutYTImageLink
+                                            this.image.wrapYTImage
                                         ),
                                     list: content.radioRenderer
                                         .navigationEndpoint.watchEndpoint
@@ -136,7 +136,7 @@ export class RecommendationsService {
 
                                             const display =
                                                 item.musicTwoRowItemRenderer.thumbnailRenderer.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                                    cutYTImageLink
+                                                    this.image.wrapYTImage
                                                 );
 
                                             const title =
@@ -177,7 +177,8 @@ export class RecommendationsService {
                                                         .text.runs[0].text,
                                                     display:
                                                         item.musicResponsiveListItemRenderer.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails.map(
-                                                            cutYTImageLink
+                                                            this.image
+                                                                .wrapYTImage
                                                         ),
                                                     list: item
                                                         .musicResponsiveListItemRenderer

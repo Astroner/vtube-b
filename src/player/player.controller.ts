@@ -9,9 +9,7 @@ import {
     Res,
 } from "@nestjs/common";
 import { Response } from "express";
-import { lastValueFrom } from "rxjs";
 
-import { getMidItem } from "src/helpers/functions/getMidItem";
 import { YTVideo } from "src/Types";
 import { YoutubeService } from "src/youtube/youtube.service";
 import { VideoFormat } from "./player.model";
@@ -85,22 +83,6 @@ export class PlayerController {
                 quality: item.quality,
                 contentLength: item.contentLength,
             }));
-    }
-
-    @Get("thumbnail/:code")
-    async getImage(
-        @Param("code") code: string,
-        @Res() res: Response
-    ): Promise<void> {
-        const info = await this.youtube.getVideoInfo(code);
-        const { data, headers } = await lastValueFrom(
-            this.http.get(getMidItem(info.displayImage).url, {
-                responseType: "stream",
-            })
-        );
-        res.setHeader("content-type", headers["content-type"]);
-        res.setHeader("content-length", headers["content-length"]);
-        data.pipe(res);
     }
 
     @Get("/test/:code")
