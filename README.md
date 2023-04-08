@@ -14,11 +14,15 @@
 
 
 # Development Mode
-> yarn start:dev
+```shell
+yarn start:dev
+```
 
 # Deploy
-> yarn build
-> yarn start
+```shell
+yarn build
+yarn start
+```
 
 # Envs
  - PORT
