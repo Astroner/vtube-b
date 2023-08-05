@@ -19,7 +19,7 @@ export class UserController {
     @Post("sign-in")
     async auth(@Body() dto: AuthDTO): Promise<{ token: string }> {
         const token = await this.userService.authenticate(dto);
-
+ 
         return { token };
     }
 
