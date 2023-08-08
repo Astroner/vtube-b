@@ -44,7 +44,7 @@ We directly fetch HTML from *youtube.com* and *music.youtube.com* and then parse
 These services identify users and their preferences with specific cookies:
  - __Secure-3PSID - actual user ID, stored in DB.
  - PREF - content preferences. Looks like 'PREF=key1=value1&key2=value2&key3=value3;'. Keys:
-   - hl - content language. 'PREF=hl=en' for example
+   - hl - content language. 'PREF=hl=en' for example. In case of *music* it is preferable to also use **Accept-Language** header to specify language(We use both everywhere just in case).
 
 #### Parser details
 ##### Youtube

@@ -22,6 +22,7 @@ export class YoutubeChannelService {
             .get<string>(`https://youtube.com/channel/${id}/`, {
                 headers: {
                     cookie: "PREF=hl=en",
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
@@ -50,6 +51,7 @@ export class YoutubeChannelService {
             .get<string>(`https://youtube.com/channel/${id}/videos/`, {
                 headers: {
                     cookie: "PREF=hl=en",
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
@@ -159,6 +161,7 @@ export class YoutubeChannelService {
             .get<string>(`https://youtube.com/channel/${id}/playlists/`, {
                 headers: {
                     cookie: "PREF=hl=en",
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
@@ -270,6 +273,7 @@ export class YoutubeChannelService {
             .get<string>(`https://youtube.com/channel/${id}/streams/`, {
                 headers: {
                     cookie: "PREF=hl=en",
+                    "Accept-Language": "en",
                 },
             })
             .pipe(

@@ -32,6 +32,7 @@ export class PlaylistService {
                 params: { list },
                 headers: {
                     cookie: "PREF=hl=en",
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
@@ -148,7 +149,8 @@ export class PlaylistService {
             .get<string>("https://youtube.com/watch", {
                 params: { list, v: code },
                 headers: {
-                    cookie: `__Secure-3PSID=${psid};`,
+                    cookie: `__Secure-3PSID=${psid};PREF=hl=en;`,
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
@@ -214,7 +216,8 @@ export class PlaylistService {
         return this.http
             .get("https://www.youtube.com/feed/library", {
                 headers: {
-                    cookie: `__Secure-3PSID=${ytID};`,
+                    cookie: `__Secure-3PSID=${ytID};PREF=hl=en;`,
+                    "Accept-Language": "en",
                 },
             })
             .pipe(

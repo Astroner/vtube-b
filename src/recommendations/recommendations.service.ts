@@ -18,7 +18,8 @@ export class RecommendationsService {
         return this.http
             .get<string>("https://youtube.com", {
                 headers: {
-                    cookie: `__Secure-3PSID=${psid}; PREF=hl=en`,
+                    cookie: `__Secure-3PSID=${psid};PREF=hl=en;`,
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
@@ -79,6 +80,7 @@ export class RecommendationsService {
                     cookie: `__Secure-3PSID=${psid}; PREF=hl=en`,
                     "User-Agent":
                         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+                    "Accept-Language": "en",
                 },
             })
             .pipe(

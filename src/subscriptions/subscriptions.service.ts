@@ -13,7 +13,8 @@ export class SubscriptionsService {
         return this.http
             .get("https://www.youtube.com/feed/channels", {
                 headers: {
-                    cookie: `__Secure-3PSID=${psid};`,
+                    cookie: `__Secure-3PSID=${psid};PREF=hl=en;`,
+                    "Accept-Language": "en",
                 },
             })
             .pipe(
