@@ -119,7 +119,7 @@ export class YoutubeService {
                         },
                         itag: format.itag,
                         mimeType: format.mimeType ?? "",
-                        quality: format.quality,
+                        quality: format.quality as string,
                         url: format.url,
                         hasAudio: format.hasAudio,
                         hasVideo: format.hasVideo,
