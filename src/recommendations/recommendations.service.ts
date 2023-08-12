@@ -32,9 +32,15 @@ export class RecommendationsService {
                             -1
                         );
 
-                    return videos.map(({ richItemRenderer: { content } }) => {
+                    const recommendations: Recommendation[] = [];
+
+                    for (const item of videos) {
+                        if ("richSectionRenderer" in item) continue;
+
+                        const { content } = item.richItemRenderer;
+
                         if ("videoRenderer" in content) {
-                            return {
+                            recommendations.push({
                                 type: "VIDEO",
                                 value: {
                                     title: content.videoRenderer.title.runs[0]
@@ -45,9 +51,9 @@ export class RecommendationsService {
                                         ),
                                     code: content.videoRenderer.videoId,
                                 },
-                            };
+                            });
                         } else if ("radioRenderer" in content) {
-                            return {
+                            recommendations.push({
                                 type: "DYNAMIC_PLAYLIST",
                                 value: {
                                     title: content.radioRenderer.title
@@ -63,13 +69,15 @@ export class RecommendationsService {
                                         .navigationEndpoint.watchEndpoint
                                         .videoId,
                                 },
-                            };
+                            });
                         } else {
                             throw new InternalServerErrorException(
                                 "UNKNOWN_RENDERER"
                             );
                         }
-                    });
+                    }
+                        
+                    return recommendations;
                 })
             );
     }

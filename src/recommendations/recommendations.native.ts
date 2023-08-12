@@ -46,11 +46,16 @@ export interface YoutubeRecommendations {
                     tabRenderer: {
                         content: {
                             richGridRenderer: {
-                                contents: Array<{
-                                    richItemRenderer: {
-                                        content: VideoRenderer | RadioRenderer;
-                                    };
-                                }>;
+                                contents: Array<
+                                    | {
+                                        richItemRenderer: {
+                                            content: VideoRenderer | RadioRenderer
+                                        }
+                                    }
+                                    | {
+                                        richSectionRenderer: unknown
+                                    }
+                                >;
                             };
                         };
                     };
