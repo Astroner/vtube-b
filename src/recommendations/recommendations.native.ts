@@ -48,13 +48,15 @@ export interface YoutubeRecommendations {
                             richGridRenderer: {
                                 contents: Array<
                                     | {
-                                        richItemRenderer: {
-                                            content: VideoRenderer | RadioRenderer
-                                        }
-                                    }
+                                          richItemRenderer: {
+                                              content:
+                                                  | VideoRenderer
+                                                  | RadioRenderer;
+                                          };
+                                      }
                                     | {
-                                        richSectionRenderer: unknown
-                                    }
+                                          richSectionRenderer: unknown;
+                                      }
                                 >;
                             };
                         };
