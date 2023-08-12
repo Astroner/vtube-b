@@ -35,6 +35,7 @@ export class RecommendationsService {
                     const recommendations: Recommendation[] = [];
 
                     for (const item of videos) {
+                        // filter reels and posts
                         if ("richSectionRenderer" in item) continue;
 
                         const { content } = item.richItemRenderer;
