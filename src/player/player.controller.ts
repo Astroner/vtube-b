@@ -86,7 +86,7 @@ export class PlayerController {
     }
 
     @Get("/test/:code")
-    page(@Param("code") code: string): string {
+    page(@Param("code") code: string, @Query("itag") itag?: string): string {
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,7 +96,9 @@ export class PlayerController {
     <title>Document</title>
 </head>
 <body>
-    <video id="vid" width="50%" src="/player/${code}" controls>
+    <video id="vid" width="50%" src="/player/${code}${
+            itag ? `?itag=${itag}` : ""
+        }" controls>
     </video>
 </body>
 </html>`;

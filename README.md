@@ -114,4 +114,4 @@ const headers = {
 because without it YTM will not respond with data.
 
 # Refs
- - [HTTP client](#https://github.com/Astroner/vtube-client)
+ - [HTTP client](https://github.com/Astroner/vtube-client)
