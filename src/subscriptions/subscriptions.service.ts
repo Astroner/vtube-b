@@ -9,7 +9,10 @@ import { Subscriptions } from "./subscriptions.native";
 export class SubscriptionsService {
     constructor(private http: HttpService) {}
 
-    getSubscriptions(psid: string, psidts: string): Observable<ChannelPreview[]> {
+    getSubscriptions(
+        psid: string,
+        psidts: string
+    ): Observable<ChannelPreview[]> {
         return this.http
             .get("https://www.youtube.com/feed/channels", {
                 headers: {

@@ -20,7 +20,12 @@ export class PlaylistController {
         @Param("list") list: string,
         @Param("code") code: string
     ): Observable<YTPlaylist> {
-        return this.playlist.getDynamicPlaylist(user.psid, user.psidts, list, code);
+        return this.playlist.getDynamicPlaylist(
+            user.psid,
+            user.psidts,
+            list,
+            code
+        );
     }
 
     @Protected()

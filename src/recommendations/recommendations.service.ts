@@ -14,7 +14,10 @@ import {
 export class RecommendationsService {
     constructor(private http: HttpService, private image: ImageService) {}
 
-    getYoutubeRecommendations(psid: string, psidts: string): Observable<Recommendation[]> {
+    getYoutubeRecommendations(
+        psid: string,
+        psidts: string
+    ): Observable<Recommendation[]> {
         return this.http
             .get<string>("https://youtube.com", {
                 headers: {
@@ -82,7 +85,10 @@ export class RecommendationsService {
                 })
             );
     }
-    getMusicRecommendations(psid: string, psidts: string): Observable<MusicCategories> {
+    getMusicRecommendations(
+        psid: string,
+        psidts: string
+    ): Observable<MusicCategories> {
         return this.http
             .get<string>("https://music.youtube.com/", {
                 headers: {

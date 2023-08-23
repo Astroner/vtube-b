@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
             password: user.password,
             username: user.username,
             psid: user.psid,
-            psidts: user.psidts
+            psidts: user.psidts,
         };
 
         request["guarded_auth_user"] = dto;

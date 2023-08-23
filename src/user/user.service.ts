@@ -26,7 +26,7 @@ export class UserService {
             username: dto.username,
             password: await hash(dto.password, saltRounds),
             psid: dto.psid,
-            psidts: dto.psidts
+            psidts: dto.psidts,
         });
 
         try {
