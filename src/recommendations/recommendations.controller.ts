@@ -13,12 +13,12 @@ export class RecommendationsController {
     @Protected()
     @Get("youtube")
     getYoutube(@UserData() user: User): Observable<Recommendation[]> {
-        return this.recs.getYoutubeRecommendations(user.ytID);
+        return this.recs.getYoutubeRecommendations(user.psid, user.psidts);
     }
 
     @Protected()
     @Get("music")
     getMusic(@UserData() user: User): Observable<MusicCategories> {
-        return this.recs.getMusicRecommendations(user.ytID);
+        return this.recs.getMusicRecommendations(user.psid, user.psidts);
     }
 }

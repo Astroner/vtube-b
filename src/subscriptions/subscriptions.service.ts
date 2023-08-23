@@ -9,11 +9,11 @@ import { Subscriptions } from "./subscriptions.native";
 export class SubscriptionsService {
     constructor(private http: HttpService) {}
 
-    getSubscriptions(psid: string): Observable<ChannelPreview[]> {
+    getSubscriptions(psid: string, psidts: string): Observable<ChannelPreview[]> {
         return this.http
             .get("https://www.youtube.com/feed/channels", {
                 headers: {
-                    cookie: `__Secure-3PSID=${psid};PREF=hl=en;`,
+                    cookie: `__Secure-3PSID=${psid}; __Secure-3PSIDTS=${psidts}; PREF=hl=en;`,
                     "Accept-Language": "en",
                 },
             })

@@ -20,13 +20,13 @@ export class PlaylistController {
         @Param("list") list: string,
         @Param("code") code: string
     ): Observable<YTPlaylist> {
-        return this.playlist.getDynamicPlaylist(user.ytID, list, code);
+        return this.playlist.getDynamicPlaylist(user.psid, user.psidts, list, code);
     }
 
     @Protected()
     @Get("all")
     getAllPlaylists(@UserData() user: User): Observable<YTPlaylistWithID[]> {
-        return this.playlist.getAll(user.ytID);
+        return this.playlist.getAll(user.psid, user.psidts);
     }
 
     @Get("continue/:key")

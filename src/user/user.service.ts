@@ -25,7 +25,8 @@ export class UserService {
         const user = new this.userModel({
             username: dto.username,
             password: await hash(dto.password, saltRounds),
-            ytID: dto.ytID,
+            psid: dto.psid,
+            psidts: dto.psidts
         });
 
         try {

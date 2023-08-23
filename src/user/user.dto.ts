@@ -11,7 +11,11 @@ export class CreateUserDTO {
 
     @IsNotEmpty()
     @IsString()
-    ytID!: string;
+    psid!: string;
+
+    @IsNotEmpty()
+    @IsString()
+    psidts!: string;
 }
 
 export class AuthDTO {

@@ -142,6 +142,7 @@ export class PlaylistService {
 
     getDynamicPlaylist(
         psid: string,
+        psidts: string,
         list: string,
         code: string
     ): Observable<YTPlaylist> {
@@ -149,7 +150,7 @@ export class PlaylistService {
             .get<string>("https://youtube.com/watch", {
                 params: { list, v: code },
                 headers: {
-                    cookie: `__Secure-3PSID=${psid};PREF=hl=en;`,
+                    cookie: `__Secure-3PSID=${psid}; __Secure-3PSIDTS=${psidts}; PREF=hl=en;`,
                     "Accept-Language": "en",
                 },
             })
@@ -212,11 +213,11 @@ export class PlaylistService {
             );
     }
 
-    getAll(ytID: string): Observable<YTPlaylistWithID[]> {
+    getAll(psid: string, psidts): Observable<YTPlaylistWithID[]> {
         return this.http
             .get("https://www.youtube.com/feed/library", {
                 headers: {
-                    cookie: `__Secure-3PSID=${ytID};PREF=hl=en;`,
+                    cookie: `__Secure-3PSID=${psid}; __Secure-3PSIDTS=${psidts}; PREF=hl=en;`,
                     "Accept-Language": "en",
                 },
             })

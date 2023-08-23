@@ -10,7 +10,10 @@ export class User {
     password!: string;
 
     @Prop({ type: String, required: true })
-    ytID!: string;
+    psid!: string;
+
+    @Prop({ type: String, required: true })
+    psidts!: string;
 }
 
 export type UserDocument = HydratedDocument<User>;

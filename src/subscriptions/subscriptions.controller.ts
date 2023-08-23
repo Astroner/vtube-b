@@ -13,6 +13,6 @@ export class SubscriptionsController {
     @Protected()
     @Get()
     getSubscriptions(@UserData() user: User): Observable<ChannelPreview[]> {
-        return this.subscriptions.getSubscriptions(user.ytID);
+        return this.subscriptions.getSubscriptions(user.psid, user.psidts);
     }
 }
